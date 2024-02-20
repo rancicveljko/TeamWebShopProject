@@ -24,22 +24,24 @@ namespace WebShop.Services
             //                    "{\"_id\":7, \"name\":\"Proizvod 7\", \"imageURL\":\"7.jpg\"}",
             //                    "{\"_id\":8, \"name\":\"Proizvod 8\", \"imageURL\":\"8.jpg\"}",
             //                    "{\"_id\":9, \"name\":\"Proizvod 9\", \"imageURL\":\"9.jpg\"}"};
-
+            
             var connectionString = "mongodb://localhost/?safe=true";
-            var server = MongoServer.Create(connectionString);
-            var db = server.GetDatabase("products");
+            var client = new MongoClient(connectionString);
+            var database = client.GetDatabase("products");
+            var collection = database.GetCollection<BsonDocument>("products");
+            //var collection = database.GetCollection<Product>("products");
 
-            var collection = db.GetCollection<BsonDocument>("products");
-
-            List<string> products = new List<string>();
-
-            foreach (BsonDocument doc in collection.FindAll())
+            var products = new List<string>();
+            
+            var documents = collection.Find(new BsonDocument()).ToList();
+            
+            foreach (var doc in documents)
             {
                 products.Add(doc.ToJson());
             }
 
             return products.ToArray();
-                                
+                                    
         }
 
 
