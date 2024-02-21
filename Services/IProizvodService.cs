@@ -5,7 +5,7 @@ namespace WebShop.Services
     public interface IProizvodService
     {
 
-        string[] GetProductList(int page,string tag);
+        List<Proizvod> GetProductList(int page,string tag);
 
 
         Proizvod GetProductDetails(string id);

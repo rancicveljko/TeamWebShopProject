@@ -14,23 +14,14 @@ namespace WebShop.Services
 {
     public class ProizvodService : IProizvodService
     {
-        
-       
-        
-
-        public string[] GetProductList(int page, string tag)
+        public List<Proizvod> GetProductList(int page, string tag)
         {
             var connectionString = "mongodb://localhost/?safe=true";
             var client = new MongoClient(connectionString);
             var database = client.GetDatabase("products");
             var collection = database.GetCollection<Proizvod>("products");
-         
-         
-            
-            var products = new List<string>();
-            
+        
             int pageSize = 5;
-            
             int skip = (page - 1) * pageSize;
             
             FilterDefinition<Proizvod> combinedFilter;
@@ -42,19 +33,14 @@ namespace WebShop.Services
             }
             else
             {
-                // Ako tag nije pružen, koristimo prazan filter koji odgovara svim dokumentima
                 combinedFilter = Builders<Proizvod>.Filter.Empty;
             }
 
-            var documents = collection.Find(combinedFilter).Skip(skip).Limit(pageSize).ToList();
+            var products = collection.Find(combinedFilter).Skip(skip).Limit(pageSize).ToList();
             
-            foreach (var doc in documents)
-            {
-                products.Add(doc.ToJson());
-            }
-
-            return products.ToArray();    
+            return products;    
         }
+
             
             public Proizvod GetProductDetails(string id)
             {

@@ -14,12 +14,19 @@ namespace WebShop.Controllers
             _proizvodService = proizvodService;
         }
 
+        // [HttpGet("product-list/{page}")]
+        // public IActionResult GetProductList(int page, [FromQuery] string tag = null)
+        // {
+        //     var productList = _proizvodService.GetProductList(page, tag);
+        //     return Ok(productList);
+        // }
         [HttpGet("product-list/{page}")]
         public IActionResult GetProductList(int page, [FromQuery] string tag = null)
         {
             var productList = _proizvodService.GetProductList(page, tag);
             return Ok(productList);
         }
+
 
 
 
