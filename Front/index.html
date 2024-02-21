@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Web Shop</title>
+
+    <!--STYLE LINK-->
+    <link href="shopStyle.css" rel="stylesheet" />
+
+    <!--SCRIPT LINK-->
+    <script type="text/javascript" src="shopScript.js"></script>
+</head>
+
+<body>
+    <div align="left" style="min-height:800px;">
+
+        <div id="cart_wrapper" align="center">
+
+            <form action="#" id="cart_form" name="cart_form">
+
+                <div class="cart-info"></div>
+
+                <div class="cart-total">
+
+                    <b>Total Charges:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> $<span>0</span>
+
+                    <input type="hidden" name="total-hidden-charges" id="total-hidden-charges" value="0" />
+                </div>
+
+                <button type="submit" id="Submit">CheckOut</button>
+
+            </form>
+        </div>
+
+        <div id="wrap" align="center">
+
+            <a id="show_cart" href="javascript:void(0)">View Cart</a>
+
+            <ul id="wrapul">
+
+            </ul>
+            <br clear="all" />
+        </div>
+
+
+    </div>
+</body>
+
+</html>

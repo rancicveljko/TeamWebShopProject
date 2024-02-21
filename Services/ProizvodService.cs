@@ -9,19 +9,27 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using WebShop.Models;
 using System.Collections.ObjectModel;
+using Microsoft.Extensions.Options;
 
 namespace WebShop.Services
 {
     public class ProizvodService : IProizvodService
     {
+        private readonly IMongoDatabase _database;
+        private readonly MongoDbSettings _settings;
+
+        public ProizvodService(IOptions<MongoDbSettings> options)
+        {
+            _settings = options.Value;
+            var client = new MongoClient(_settings.ConnectionString);
+            _database = client.GetDatabase(_settings.DatabaseName);
+        }    
+
         public List<Proizvod> GetProductList(int page, string tag)
         {
-            var connectionString = "mongodb://localhost/?safe=true";
-            var client = new MongoClient(connectionString);
-            var database = client.GetDatabase("products");
-            var collection = database.GetCollection<Proizvod>("products");
+            var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);     
         
-            int pageSize = 5;
+            int pageSize = 8;
             int skip = (page - 1) * pageSize;
             
             FilterDefinition<Proizvod> combinedFilter;
@@ -40,19 +48,15 @@ namespace WebShop.Services
             
             return products;    
         }
-
             
-            public Proizvod GetProductDetails(string id)
-            {
-                var connectionString = "mongodb://localhost/?safe=true";
-                var client = new MongoClient(connectionString);
-                var database = client.GetDatabase("products");
-                var collection = database.GetCollection<Proizvod>("products");
-                var filter = Builders<Proizvod>.Filter.Eq("Id", id);
-                return collection.Find(filter).FirstOrDefault();
-    
-            }                           
-        }
+        public Proizvod GetProductDetails(string id)
+        {
+            var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
+            var filter = Builders<Proizvod>.Filter.Eq("Id", id);
+            return collection.Find(filter).FirstOrDefault();
+
+        }                           
+    }
 }
 
 
