@@ -1,3 +1,4 @@
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.Services;
 
@@ -23,7 +24,8 @@ namespace WebShop.Controllers
         [HttpGet("product-list/{page}")]
         public IActionResult GetProductList(int page, [FromQuery] string tag = null)
         {
-            var productList = _proizvodService.GetProductList(page, tag);
+            var decTag = HttpUtility.UrlDecode(tag);
+            var productList = _proizvodService.GetProductList(page, decTag);
             return Ok(productList);
         }
 
@@ -34,7 +36,7 @@ namespace WebShop.Controllers
         public IActionResult GetProductDetails(string id)
         {
             var productDetails = _proizvodService.GetProductDetails(id);
-            if (productDetails==null)
+            if (productDetails == null)
             {
                 return NotFound();
             }

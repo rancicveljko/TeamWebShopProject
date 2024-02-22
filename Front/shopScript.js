@@ -1,6 +1,9 @@
 var singleLiOffset;
 var currentOpenedBox;
 var arrays;
+var tagsSet = new Set();
+var currentPage;
+var currentFilter;
 function onProductClick(target, e) {
     var thisID = target.id;
     var id = Array.from(document.getElementById('wrap').querySelectorAll('li')).indexOf(target);
@@ -37,46 +40,43 @@ function onProductClick(target, e) {
     return true;
 }
 function onAddToCart(target) {
-    // const thisID: string = target.parentElement.parentElement.id.replace('detail-', '');
-    // const itemname: string = target.parentElement.querySelector('.item_name').innerHTML;
-    // const itemprice: string = target.parentElement.querySelector('.price').innerHTML;
-    // if (include(arrays, parseInt(thisID))) {
-    //     const price: string = document.getElementById(`each-${thisID}`).querySelector(".shopp-price em").innerHTML;
-    //     let quantity: number = parseInt(document.getElementById(`each-${thisID}`).querySelector(".shopp-quantity").innerHTML);
-    //     quantity += 1;
-    //     const total: number = parseInt(itemprice) * quantity;
-    //     document.getElementById(`each-${thisID}`).querySelector(".shopp-price em").innerHTML = total.toString();
-    //     document.getElementById(`each-${thisID}`).querySelector(".shopp-quantity").innerHTML = quantity.toString();
-    //     let prevCharges: number = parseInt(document.querySelector('.cart-total span').innerHTML);
-    //     prevCharges = prevCharges - parseInt(price);
-    //     prevCharges += total;
-    //     document.querySelector('.cart-total span').innerHTML = prevCharges.toString();
-    //     document.getElementById('total-hidden-charges').setAttribute('value', prevCharges.toString());
-    // } else {
-    //     arrays.push(parseInt(thisID));
-    //     let prevCharges: number = parseInt(document.querySelector('.cart-total span').innerHTML);
-    //     prevCharges += parseInt(itemprice);
-    //     document.querySelector('.cart-total span').innerHTML = prevCharges.toString();
-    //     document.getElementById('total-hidden-charges').setAttribute('value', prevCharges.toString());
-    //     const height: number = document.getElementById('cart_wrapper').offsetHeight;
-    //     document.getElementById('cart_wrapper').style.height = (height + 45) + "px";
-    //     const cartInfo = document.getElementById('cart_wrapper').querySelector('.cart-info');
-    //     const newCartItem = document.createElement('div');
-    //     newCartItem.className = 'shopp';
-    //     newCartItem.id = `each-${thisID}`;
-    //     newCartItem.innerHTML = `
-    //         <div class="label">${itemname}</div>
-    //         <div class="shopp-price"> $<em>${itemprice}</em></div>
-    //         <span class="shopp-quantity">1</span>
-    //         <img src="remove.png" class="remove" />
-    //         <br class="all" />
-    //     `;
-    //     cartInfo?.appendChild(newCartItem);
-    // }
+    if (!target.classList.contains("add-to-cart-button"))
+        return;
+    var thisID = target.parentElement.parentElement.id.replace('detail-', '');
+    var itemname = target.parentElement.querySelector('.item_name').innerHTML;
+    var itemprice = target.parentElement.querySelector('.price').innerHTML;
+    if (include(arrays, parseInt(thisID))) {
+        var price = document.getElementById("each-".concat(thisID)).querySelector(".shopp-price em").innerHTML;
+        var quantity = parseInt(document.getElementById("each-".concat(thisID)).querySelector(".shopp-quantity").innerHTML);
+        quantity += 1;
+        var total = parseInt(itemprice) * quantity;
+        document.getElementById("each-".concat(thisID)).querySelector(".shopp-price em").innerHTML = total.toString();
+        document.getElementById("each-".concat(thisID)).querySelector(".shopp-quantity").innerHTML = quantity.toString();
+        var prevCharges = parseInt(document.querySelector('.cart-total span').innerHTML);
+        prevCharges = prevCharges - parseInt(price);
+        prevCharges += total;
+        document.querySelector('.cart-total span').innerHTML = prevCharges.toString();
+        document.getElementById('total-hidden-charges').setAttribute('value', prevCharges.toString());
+    }
+    else {
+        arrays.push(parseInt(thisID));
+        var prevCharges = parseInt(document.querySelector('.cart-total span').innerHTML);
+        prevCharges += parseInt(itemprice);
+        document.querySelector('.cart-total span').innerHTML = prevCharges.toString();
+        document.getElementById('total-hidden-charges').setAttribute('value', prevCharges.toString());
+        var height = document.getElementById('cart_wrapper').offsetHeight;
+        document.getElementById('cart_wrapper').style.height = (height + 45) + "px";
+        var cartInfo = document.getElementById('cart_wrapper').querySelector('.cart-info');
+        var newCartItem = document.createElement('div');
+        newCartItem.className = 'shopp';
+        newCartItem.id = "each-".concat(thisID);
+        newCartItem.innerHTML = "\n            <div class=\"label\">".concat(itemname, "</div>\n            <div class=\"shopp-price\"> $<em>").concat(itemprice, "</em></div>\n            <span class=\"shopp-quantity\">1</span>\n            <img src=\"../Assets/remove.png\" class=\"remove\" />\n            <br class=\"all\" />\n        ");
+        cartInfo === null || cartInfo === void 0 ? void 0 : cartInfo.appendChild(newCartItem);
+    }
 }
-function getProductList(page) {
+function getProductList(page, filter) {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:5135/WebShop/product-list/".concat(page), true);
+    xhr.open("GET", "http://localhost:5135/WebShop/product-list/".concat(page, "?tag=").concat(filter), true);
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
@@ -92,11 +92,15 @@ function getProductList(page) {
     xhr.send();
 }
 function renderProducts(result) {
+    // clear previous ul
+    var ulWrap = document.getElementById("wrapul");
+    ulWrap.innerHTML = "";
     var productList = document.createElement("ul");
     var prevProductItem = null;
     var prevDetailView = null;
     for (var i = 0; i < result.length; i++) {
         var product = result[i];
+        result[i].tags.forEach(function (element) { return tagsSet.add(element); }); // add tags
         var productItem = document.createElement("li");
         productItem.id = (i + 1).toString();
         var productImage = document.createElement("img");
@@ -190,13 +194,15 @@ function renderProducts(result) {
             });
         });
     });
+    addFilterBox();
 }
 document.addEventListener("DOMContentLoaded", function () {
     var _a, _b;
     singleLiOffset = 1000;
     currentOpenedBox = -1;
     arrays = new Array();
-    getProductList(1);
+    currentPage = 1;
+    getProductList(currentPage, "");
     document.addEventListener('click', function (e) {
         var _a;
         if (e.target.classList.contains('remove')) {
@@ -230,4 +236,41 @@ function include(arr, obj) {
 }
 function getpos(arr, obj) {
     return arr.indexOf(obj);
+}
+function addFilterBox() {
+    var wrapUl = document.getElementById("wrapul");
+    var newDiv = document.createElement("div");
+    newDiv.id = "wrap-select";
+    wrapUl.appendChild(newDiv);
+    var selLabel = document.createElement("label");
+    selLabel.className = "select-label";
+    selLabel.innerText = "Filter:";
+    newDiv.appendChild(selLabel);
+    var newSelect = document.createElement("select");
+    newSelect.id = "filter-select";
+    newDiv.appendChild(newSelect);
+    tagsSet.forEach(function (tag) {
+        var newOpt = document.createElement("option");
+        newOpt.value = tag;
+        newOpt.innerText = tag;
+        newSelect.appendChild(newOpt);
+    });
+    newDiv.appendChild(document.createElement("br"));
+    var btnApplyFilter = document.createElement("button");
+    btnApplyFilter.id = "btn-apply-filter";
+    btnApplyFilter.innerText = "Apply Filter";
+    btnApplyFilter.addEventListener("click", function (e) {
+        currentFilter = newSelect.options[newSelect.selectedIndex].value;
+        getProductList(currentPage, currentFilter);
+        alert("clicked");
+    });
+    newDiv.appendChild(btnApplyFilter);
+    var btnClearFilter = document.createElement("button");
+    btnClearFilter.id = "btn-clear-filter";
+    btnClearFilter.innerText = "Clear Filter";
+    btnClearFilter.addEventListener("click", function (e) {
+        currentFilter = "";
+        getProductList(currentPage, currentFilter);
+    });
+    newDiv.appendChild(btnClearFilter);
 }

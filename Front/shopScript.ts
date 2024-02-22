@@ -1,6 +1,9 @@
 let singleLiOffset: number;
 let currentOpenedBox: number;
 let arrays: Array<number>;
+const tagsSet = new Set<string>();
+let currentPage: number;
+let currentFilter: string;
 
 function onProductClick(target: HTMLLIElement, e: Event) {
     const thisID: string = target.id;
@@ -50,57 +53,58 @@ function onProductClick(target: HTMLLIElement, e: Event) {
 }
 
 function onAddToCart(target: HTMLElement): void {
-    // const thisID: string = target.parentElement.parentElement.id.replace('detail-', '');
-    // const itemname: string = target.parentElement.querySelector('.item_name').innerHTML;
-    // const itemprice: string = target.parentElement.querySelector('.price').innerHTML;
+    if (!target.classList.contains("add-to-cart-button")) return;
+    const thisID: string = target.parentElement!.parentElement!.id.replace('detail-', '');
+    const itemname: string = target.parentElement!.querySelector('.item_name')!.innerHTML;
+    const itemprice: string = target.parentElement!.querySelector('.price')!.innerHTML;
 
-    // if (include(arrays, parseInt(thisID))) {
-    //     const price: string = document.getElementById(`each-${thisID}`).querySelector(".shopp-price em").innerHTML;
-    //     let quantity: number = parseInt(document.getElementById(`each-${thisID}`).querySelector(".shopp-quantity").innerHTML);
-    //     quantity += 1;
+    if (include(arrays, parseInt(thisID))) {
+        const price: string = document.getElementById(`each-${thisID}`)!.querySelector(".shopp-price em")!.innerHTML;
+        let quantity: number = parseInt(document.getElementById(`each-${thisID}`)!.querySelector(".shopp-quantity")!.innerHTML);
+        quantity += 1;
 
-    //     const total: number = parseInt(itemprice) * quantity;
+        const total: number = parseInt(itemprice) * quantity;
 
-    //     document.getElementById(`each-${thisID}`).querySelector(".shopp-price em").innerHTML = total.toString();
-    //     document.getElementById(`each-${thisID}`).querySelector(".shopp-quantity").innerHTML = quantity.toString();
+        document.getElementById(`each-${thisID}`)!.querySelector(".shopp-price em")!.innerHTML = total.toString();
+        document.getElementById(`each-${thisID}`)!.querySelector(".shopp-quantity")!.innerHTML = quantity.toString();
 
-    //     let prevCharges: number = parseInt(document.querySelector('.cart-total span').innerHTML);
-    //     prevCharges = prevCharges - parseInt(price);
+        let prevCharges: number = parseInt(document.querySelector('.cart-total span')!.innerHTML);
+        prevCharges = prevCharges - parseInt(price);
 
-    //     prevCharges += total;
-    //     document.querySelector('.cart-total span').innerHTML = prevCharges.toString();
+        prevCharges += total;
+        document.querySelector('.cart-total span')!.innerHTML = prevCharges.toString();
 
-    //     document.getElementById('total-hidden-charges').setAttribute('value', prevCharges.toString());
-    // } else {
-    //     arrays.push(parseInt(thisID));
+        document.getElementById('total-hidden-charges')!.setAttribute('value', prevCharges.toString());
+    } else {
+        arrays.push(parseInt(thisID));
 
-    //     let prevCharges: number = parseInt(document.querySelector('.cart-total span').innerHTML);
-    //     prevCharges += parseInt(itemprice);
+        let prevCharges: number = parseInt(document.querySelector('.cart-total span')!.innerHTML);
+        prevCharges += parseInt(itemprice);
 
-    //     document.querySelector('.cart-total span').innerHTML = prevCharges.toString();
-    //     document.getElementById('total-hidden-charges').setAttribute('value', prevCharges.toString());
+        document.querySelector('.cart-total span')!.innerHTML = prevCharges.toString();
+        document.getElementById('total-hidden-charges')!.setAttribute('value', prevCharges.toString());
 
-    //     const height: number = document.getElementById('cart_wrapper').offsetHeight;
-    //     document.getElementById('cart_wrapper').style.height = (height + 45) + "px";
+        const height: number = document.getElementById('cart_wrapper')!.offsetHeight;
+        document.getElementById('cart_wrapper')!.style.height = (height + 45) + "px";
 
-    //     const cartInfo = document.getElementById('cart_wrapper').querySelector('.cart-info');
-    //     const newCartItem = document.createElement('div');
-    //     newCartItem.className = 'shopp';
-    //     newCartItem.id = `each-${thisID}`;
-    //     newCartItem.innerHTML = `
-    //         <div class="label">${itemname}</div>
-    //         <div class="shopp-price"> $<em>${itemprice}</em></div>
-    //         <span class="shopp-quantity">1</span>
-    //         <img src="remove.png" class="remove" />
-    //         <br class="all" />
-    //     `;
-    //     cartInfo?.appendChild(newCartItem);
-    // }
+        const cartInfo = document.getElementById('cart_wrapper')!.querySelector('.cart-info');
+        const newCartItem = document.createElement('div');
+        newCartItem.className = 'shopp';
+        newCartItem.id = `each-${thisID}`;
+        newCartItem.innerHTML = `
+            <div class="label">${itemname}</div>
+            <div class="shopp-price"> $<em>${itemprice}</em></div>
+            <span class="shopp-quantity">1</span>
+            <img src="../Assets/remove.png" class="remove" />
+            <br class="all" />
+        `;
+        cartInfo?.appendChild(newCartItem);
+    }
 }
 
-function getProductList(page: number): void {
+function getProductList(page: number, filter: string): void {
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://localhost:5135/WebShop/product-list/${page}`, true);
+    xhr.open("GET", `http://localhost:5135/WebShop/product-list/${page}?tag=${filter}`, true);
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
 
     xhr.onreadystatechange = function () {
@@ -118,12 +122,18 @@ function getProductList(page: number): void {
 }
 
 function renderProducts(result: any): void {
+
+    // clear previous ul
+    const ulWrap = document.getElementById("wrapul")!;
+    ulWrap.innerHTML = "";
+
     const productList = document.createElement("ul");
     let prevProductItem: HTMLElement | null = null;
     let prevDetailView: HTMLElement | null = null;
 
     for (let i = 0; i < result.length; i++) {
         const product = result[i];
+        result[i].tags.forEach(element => tagsSet.add(element)); // add tags
 
         const productItem = document.createElement("li");
         productItem.id = (i + 1).toString();
@@ -244,6 +254,8 @@ function renderProducts(result: any): void {
             });
         });
     });
+
+    addFilterBox();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -251,7 +263,8 @@ document.addEventListener("DOMContentLoaded", function () {
     currentOpenedBox = -1;
     arrays = new Array<number>();
 
-    getProductList(1);
+    currentPage = 1;
+    getProductList(currentPage, "");
 
     document.addEventListener('click', function (e) {
         if ((e.target as HTMLElement).classList.contains('remove')) {
@@ -292,4 +305,49 @@ function include(arr: Array<number>, obj: number): boolean {
 
 function getpos(arr: Array<number>, obj: number): number {
     return arr.indexOf(obj);
+}
+
+function addFilterBox(): void {
+    const wrapUl: HTMLElement = document.getElementById("wrapul")!;
+
+    const newDiv: HTMLDivElement = document.createElement("div");
+    newDiv.id = "wrap-select";
+    wrapUl.appendChild(newDiv);
+
+    const selLabel = document.createElement("label");
+    selLabel.className = "select-label";
+    selLabel.innerText = "Filter:";
+    newDiv.appendChild(selLabel);
+
+    const newSelect = document.createElement("select");
+    newSelect.id = "filter-select";
+    newDiv.appendChild(newSelect);
+
+    tagsSet.forEach(tag => {
+        const newOpt = document.createElement("option");
+        newOpt.value = tag;
+        newOpt.innerText = tag;
+        newSelect.appendChild(newOpt);
+    });
+
+    newDiv.appendChild(document.createElement("br"));
+    const btnApplyFilter = document.createElement("button");
+    btnApplyFilter.id = "btn-apply-filter";
+    btnApplyFilter.innerText = "Apply Filter";
+    btnApplyFilter.addEventListener("click", function (e) {
+
+        currentFilter = newSelect.options[newSelect.selectedIndex].value;
+        getProductList(currentPage, currentFilter);
+    });
+    newDiv.appendChild(btnApplyFilter);
+
+    const btnClearFilter = document.createElement("button");
+    btnClearFilter.id = "btn-clear-filter";
+    btnClearFilter.innerText = "Clear Filter";
+    btnClearFilter.addEventListener("click", function (e) {
+        currentFilter = "";
+        getProductList(currentPage, currentFilter);
+    });
+    newDiv.appendChild(btnClearFilter);
+
 }
