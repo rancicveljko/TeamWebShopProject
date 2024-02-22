@@ -3,7 +3,9 @@ var currentOpenedBox;
 var arrays;
 var tagsSet = new Set();
 var currentPage;
-var currentFilter;
+var currentFilter = "";
+var itemsPerRow = 4;
+var numOfRows = 2;
 function onProductClick(target, e) {
     var thisID = target.id;
     var id = Array.from(document.getElementById('wrap').querySelectorAll('li')).indexOf(target);
@@ -165,7 +167,7 @@ function renderProducts(result) {
         detailView.appendChild(closeX);
         detailView.appendChild(productImageDetail);
         detailView.appendChild(detailInfo);
-        if (i % 4 === 0) {
+        if (i % itemsPerRow === 0) {
             productList.appendChild(productItem);
             productList.appendChild(detailView);
         }
@@ -203,6 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
     arrays = new Array();
     currentPage = 1;
     getProductList(currentPage, "");
+    getTotalProducts();
     document.addEventListener('click', function (e) {
         var _a;
         if (e.target.classList.contains('remove')) {
@@ -262,7 +265,6 @@ function addFilterBox() {
     btnApplyFilter.addEventListener("click", function (e) {
         currentFilter = newSelect.options[newSelect.selectedIndex].value;
         getProductList(currentPage, currentFilter);
-        alert("clicked");
     });
     newDiv.appendChild(btnApplyFilter);
     var btnClearFilter = document.createElement("button");
@@ -273,4 +275,42 @@ function addFilterBox() {
         getProductList(currentPage, currentFilter);
     });
     newDiv.appendChild(btnClearFilter);
+}
+function getTotalProducts() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:5135/WebShop/total-products", true);
+    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                var result = JSON.parse(xhr.response);
+                renderPages(result);
+            }
+            else {
+                alert("Error loading products");
+            }
+        }
+    };
+    xhr.send();
+}
+function renderPages(totalProducts) {
+    var numOfPages = Math.ceil(totalProducts / (itemsPerRow * numOfRows));
+    var pageButtonsContainer = document.getElementById('wrap-page-buttons');
+    if (pageButtonsContainer) {
+        pageButtonsContainer.innerHTML = '';
+        var _loop_1 = function (id) {
+            var button = document.createElement('button');
+            button.textContent = (id + 1).toString();
+            button.className = 'page-button';
+            button.id = "button-page-".concat(id + 1);
+            button.onclick = function () {
+                currentPage = id + 1;
+                getProductList(currentPage, currentFilter);
+            };
+            pageButtonsContainer.appendChild(button);
+        };
+        for (var id = 0; id < numOfPages; id++) {
+            _loop_1(id);
+        }
+    }
 }

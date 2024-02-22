@@ -3,7 +3,9 @@ let currentOpenedBox: number;
 let arrays: Array<number>;
 const tagsSet = new Set<string>();
 let currentPage: number;
-let currentFilter: string;
+let currentFilter: string = "";
+const itemsPerRow: number = 4;
+const numOfRows: number = 2;
 
 function onProductClick(target: HTMLLIElement, e: Event) {
     const thisID: string = target.id;
@@ -221,7 +223,7 @@ function renderProducts(result: any): void {
         detailView.appendChild(productImageDetail);
         detailView.appendChild(detailInfo);
 
-        if (i % 4 === 0) {
+        if (i % itemsPerRow === 0) {
             productList.appendChild(productItem);
             productList.appendChild(detailView);
         } else {
@@ -265,6 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     currentPage = 1;
     getProductList(currentPage, "");
+    getTotalProducts();
 
     document.addEventListener('click', function (e) {
         if ((e.target as HTMLElement).classList.contains('remove')) {
@@ -350,4 +353,48 @@ function addFilterBox(): void {
     });
     newDiv.appendChild(btnClearFilter);
 
+}
+
+function getTotalProducts(): void {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `http://localhost:5135/WebShop/total-products`, true);
+    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                const result = JSON.parse(xhr.response);
+                renderPages(result);
+            } else {
+                alert("Error loading products");
+            }
+        }
+    };
+
+    xhr.send();
+}
+
+function renderPages(totalProducts: number): void {
+    let numOfPages: number = Math.ceil(totalProducts / (itemsPerRow * numOfRows));
+
+    const pageButtonsContainer: HTMLElement | null = document.getElementById('wrap-page-buttons');
+
+    if (pageButtonsContainer) {
+        pageButtonsContainer.innerHTML = '';
+
+        for (let id = 0; id < numOfPages; id++) {
+            const button = document.createElement('button');
+
+            button.textContent = (id + 1).toString(); 
+            button.className = 'page-button';
+            button.id = `button-page-${id + 1}`;
+
+            button.onclick = function () {
+                currentPage = id + 1;
+                getProductList(currentPage, currentFilter);
+            };
+
+            pageButtonsContainer.appendChild(button);
+        }
+    }
 }
