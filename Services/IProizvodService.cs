@@ -9,6 +9,8 @@ namespace WebShop.Services
 
 
         Proizvod GetProductDetails(string id);
+
+         long GetTotalNumberOfProducts();
     }
 
 }

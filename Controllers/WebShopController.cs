@@ -15,12 +15,6 @@ namespace WebShop.Controllers
             _proizvodService = proizvodService;
         }
 
-        // [HttpGet("product-list/{page}")]
-        // public IActionResult GetProductList(int page, [FromQuery] string tag = null)
-        // {
-        //     var productList = _proizvodService.GetProductList(page, tag);
-        //     return Ok(productList);
-        // }
         [HttpGet("product-list/{page}")]
         public IActionResult GetProductList(int page, [FromQuery] string tag = null)
         {
@@ -28,9 +22,6 @@ namespace WebShop.Controllers
             var productList = _proizvodService.GetProductList(page, decTag);
             return Ok(productList);
         }
-
-
-
 
         [HttpGet("product-details/{id}")]
         public IActionResult GetProductDetails(string id)
@@ -41,6 +32,13 @@ namespace WebShop.Controllers
                 return NotFound();
             }
             return Ok(productDetails);
+        }
+
+        [HttpGet("total-products")]
+        public IActionResult GetTotalProducts()
+        {
+            var totalProducts = _proizvodService.GetTotalNumberOfProducts();
+            return Ok(totalProducts);
         }
     }
 }

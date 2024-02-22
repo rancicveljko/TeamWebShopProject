@@ -55,7 +55,12 @@ namespace WebShop.Services
             var filter = Builders<Proizvod>.Filter.Eq("Id", id);
             return collection.Find(filter).FirstOrDefault();
 
-        }                           
+        }     
+        public long GetTotalNumberOfProducts()
+        {
+            var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
+            return collection.CountDocuments(Builders<Proizvod>.Filter.Empty);
+        }                        
     }
 }
 
