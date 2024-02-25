@@ -22,17 +22,15 @@ body {
 }
 
 #wrap .detail-view {
-	/* background: none repeat scroll 0 0 #F3F4EE;*/
 	border: 1px solid #E2E2E2;
-	border-top: 1px solid #E2E2E2;
-	left: 0;
-	height: 380px;
-	overflow: hidden;
-	clear: both;
-	display: none;
-	margin-left: 13px;
-	margin-bottom: 15px;
-	width: 96%;
+    border-top: 1px solid #E2E2E2;
+    left: 0;
+    overflow: hidden;
+    clear: both;
+    display: none;
+    margin-left: 13px;
+    margin-bottom: 15px;
+    width: 96%;
 }
 
 #wrap .detail-view .close {
@@ -52,15 +50,57 @@ body {
 	float: left
 }
 
-#wrap .detail-view .detail_info {
+#wrap .detail-view .detail_info{
 	float: right;
-	font-family: "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, sans-serif;
-	color: #525049;
-	margin-right: 20px;
-	margin-top: 30px;
-	text-align: justify;
-	width: 250px;
-	font-size: 12px;
+    font-family: "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, sans-serif;
+    color: #525049;
+    margin-right: 20px;
+    margin-top: 30px;
+    text-align: justify;
+    width: 250px;
+    font-size: 12px;
+}
+
+#wrap .detail-view .comments_section{
+	float: right;
+    font-family: "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, sans-serif;
+    color: #525049;
+    width: calc(96% - 20px); 
+    font-size: 12px;
+	display: flex;  
+    flex-direction: column; 
+    align-items: flex-start; 
+}
+
+#wrap .detail-view .comments_section p {
+    margin-bottom: 10px;
+}
+
+#wrap .detail-view .comments_section ul {
+    list-style: none;
+    padding: 0;
+	margin: 0;
+	display: flex;  
+    flex-direction: column; 
+    align-items: flex-start; 
+}
+
+#wrap .detail-view .comments_section li {
+    font-family: "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, sans-serif;
+    font-size: 12px;
+    color: #525049;
+    margin-bottom: 10px;
+	border: 1px solid #E2E2E2;  
+    padding: 10px; 
+	box-sizing: border-box;
+    height: 100%; 
+	text-align: start;
+}
+
+
+#wrap .detail-view .comments_section li.no-comments {
+    color: #888;
+    margin-bottom: 10px;
 }
 
 #wrap .detail-view .detail_info label {
@@ -155,7 +195,6 @@ img#cart {
 	bottom: 0px;
 	position: fixed;
 	margin-left: 30px;
-	/* keep the bar on top  */
 }
 
 #wrap ul li {
@@ -263,4 +302,31 @@ img.remove {
 .select-label {
 	font: 15px/21px "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, sans-serif;
     color: #525049;
+}
+
+.input-and-button-container {
+	display: flex;
+	flex-direction: row;
+    align-items: flex-start;
+    margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.comment-input {
+	flex: 1;
+	margin-right: 10px;
+	margin-left: 10px;
+	width: 100%;
+}
+
+.add-comment-button {
+	cursor: pointer;
+	padding: 7px;
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	border-radius: 4px;
+}
+.add-comment-button:hover {
+	background: none repeat scroll 0 0 #4aa74f;
 }

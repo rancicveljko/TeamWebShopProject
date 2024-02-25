@@ -4,7 +4,6 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace WebShop.Models
 {
     [BsonIgnoreExtraElements]
-
     public class Proizvod
     {
         [BsonId]
@@ -17,6 +16,8 @@ namespace WebShop.Models
         public string[] Tags { get; set; }
         [BsonElement("price")]
         public int Price { get; set; }
+        [BsonElement("comments")]
+        public string[] Comments { get; set; }
     }
 
 }

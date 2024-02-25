@@ -32,13 +32,12 @@ function onProductClick(target, e) {
         targetOffset = singleLiOffset * 3;
     else if (id <= 19)
         targetOffset = singleLiOffset * 4;
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
     document.documentElement.scrollTop = targetOffset;
     document.body.scrollTop = targetOffset;
     document.querySelectorAll("#wrap #detail-".concat(thisID)).forEach(function (el) {
         el.style.display = "block";
     });
+    
     return true;
 }
 function onAddToCart(target) {
@@ -76,6 +75,26 @@ function onAddToCart(target) {
         cartInfo === null || cartInfo === void 0 ? void 0 : cartInfo.appendChild(newCartItem);
     }
 }
+
+function getUniqueTags() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:5135/WebShop/unique-tags", true);
+    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                var result = JSON.parse(xhr.response);
+                result.forEach(tag => {
+                    tagsSet.add(tag);
+                });
+            } else {
+                alert("Error loading tags");
+            }
+        }
+    };
+    xhr.send();
+}
+
 function getProductList(page, filter) {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "http://localhost:5135/WebShop/product-list/".concat(page, "?tag=").concat(filter), true);
@@ -94,7 +113,6 @@ function getProductList(page, filter) {
     xhr.send();
 }
 function renderProducts(result) {
-    // clear previous ul
     var ulWrap = document.getElementById("wrapul");
     ulWrap.innerHTML = "";
     var productList = document.createElement("ul");
@@ -102,7 +120,6 @@ function renderProducts(result) {
     var prevDetailView = null;
     for (var i = 0; i < result.length; i++) {
         var product = result[i];
-        result[i].tags.forEach(function (element) { return tagsSet.add(element); }); // add tags
         var productItem = document.createElement("li");
         productItem.id = (i + 1).toString();
         var productImage = document.createElement("img");
@@ -113,7 +130,7 @@ function renderProducts(result) {
         productBr.setAttribute("clear", "all");
         var productDiv = document.createElement("div");
         productDiv.innerHTML = product.name;
-        productDiv.id = product._id;
+        productDiv.id = product.id;
         productItem.appendChild(productImage);
         productItem.appendChild(productBr);
         productItem.appendChild(productDiv);
@@ -159,14 +176,49 @@ function renderProducts(result) {
         var productButton = document.createElement("button");
         productButton.className = "add-to-cart-button";
         productButton.innerHTML = "Add to Cart";
+
+
         detailInfo.appendChild(itemName);
         detailInfo.appendChild(productBr);
         detailInfo.appendChild(productDesc);
         detailInfo.appendChild(productBr3);
         detailInfo.appendChild(productButton);
+
+        const commentsSection = document.createElement("div");
+        commentsSection.className = "comments-section";
+        commentsSection.id = `${product.id}`;
+        commentsSection.className = "comments_section";
+
+        const commentsHeader = document.createElement("h3");
+        commentsHeader.innerText = "Comments:";
+
+        const commentsList = document.createElement("ul");
+        commentsList.id = `comments-list-${product.id}`;
+
+        getComments(product.id);
+    
+        const commentInput = document.createElement("textarea");
+        commentInput.className = "comment-input";
+        commentInput.id = `comment-input-${product.id}`;
+        commentInput.placeholder = "Enter a comment";
+
+        var addCommentButton = document.createElement("button");
+        addCommentButton.className = "add-comment-button";
+        addCommentButton.innerText = "Add comment";
+
+        commentsSection.appendChild(commentsHeader);
+        commentsSection.appendChild(commentsList);
+        const inputAndButtonContainer = document.createElement("div");
+        inputAndButtonContainer.classList.add("input-and-button-container");
+        inputAndButtonContainer.appendChild(commentInput);
+        inputAndButtonContainer.appendChild(addCommentButton);
+
+        commentsSection.appendChild(inputAndButtonContainer);
+
         detailView.appendChild(closeX);
         detailView.appendChild(productImageDetail);
         detailView.appendChild(detailInfo);
+        detailView.appendChild(commentsSection);
         if (i % itemsPerRow === 0) {
             productList.appendChild(productItem);
             productList.appendChild(detailView);
@@ -189,6 +241,11 @@ function renderProducts(result) {
             onAddToCart(button);
         });
     });
+    document.querySelectorAll(".add-comment-button").forEach(function (button) {
+        button.addEventListener("click", function () {
+            addComment(button);
+        });
+    });
     document.querySelectorAll(".close a").forEach(function (closeA) {
         closeA.addEventListener("click", function () {
             document.querySelectorAll('#wrap .detail-view').forEach(function (el) {
@@ -204,6 +261,7 @@ document.addEventListener("DOMContentLoaded", function () {
     currentOpenedBox = -1;
     arrays = new Array();
     currentPage = 1;
+    getUniqueTags();
     getProductList(currentPage, "");
     getTotalProducts();
     document.addEventListener('click', function (e) {
@@ -313,4 +371,92 @@ function renderPages(totalProducts) {
             _loop_1(id);
         }
     }
+}
+
+
+function showComments(comments, productID) {
+    const commentsList = document.getElementById(`comments-list-${productID}`);
+    commentsList.innerHTML = "";
+    if (Array.isArray(comments) && comments.length === 0) {       
+        const li = document.createElement("li");
+        li.innerText = "No comments";
+        commentsList?.appendChild(li);
+    }
+    else{
+        comments.forEach(comment => {           
+            const li = document.createElement("li");
+            li.innerText = comment;
+            commentsList?.appendChild(li);
+        });
+    }
+}
+
+function addComment(target) {
+    if (!target.classList.contains("add-comment-button"))
+        return;
+    var productID = target.parentElement.parentElement.id.replace('detail-', '');
+    const commentInput = document.getElementById(`comment-input-${productID}`);
+    const comment = commentInput.value.trim();
+    if (!comment) {
+        alert("Comment cannot be empty.");
+        return;
+    }   
+
+    const url = `http://localhost:5135/WebShop/add-comment/${productID}/${comment}`;
+    const data = { id: productID, komentar: comment };
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            return response.json();  
+        } else {
+            return response.text();  
+        }
+    })
+    .then(result => {
+        getComments(productID);
+    })
+    .catch(error => {
+        console.error('Error during POST request:', error);
+    });
+    const commentsList = document.getElementById(`comments-list-${productID}`);
+    if (commentsList instanceof HTMLElement) {
+        const commentItem = document.createElement("li");
+        commentItem.textContent = comment;
+        commentsList.appendChild(commentItem);
+    } else {
+        console.error(`Element with ID 'comments-list-${productID}' not found.`);
+    }
+
+    getComments(productID);
+    commentInput.value = "";
+}
+
+function getComments(productID){
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `http://localhost:5135/WebShop/product-comments/${productID}`, true);
+    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                const result = JSON.parse(xhr.response);
+                showComments(result, productID);
+            } else {
+                console.error("Error loading comments. Status:", xhr.status);
+            }
+        }
+    };
+
+    xhr.send();
 }

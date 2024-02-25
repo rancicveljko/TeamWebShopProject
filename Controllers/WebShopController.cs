@@ -1,6 +1,7 @@
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.Services;
+using WebShop.Models;
 
 namespace WebShop.Controllers
 {
@@ -39,6 +40,32 @@ namespace WebShop.Controllers
         {
             var totalProducts = _proizvodService.GetTotalNumberOfProducts();
             return Ok(totalProducts);
+        }
+
+        [HttpPost("add-comment/{id}/{comment}")]
+        public IActionResult AddComment(int id, string comment)
+        {
+            if(string.IsNullOrEmpty(comment))
+            {
+                return BadRequest("Comment cannot be empty.");
+            }
+
+            _proizvodService.AddComment(id, comment);
+            return Ok("Comment successfully added.");
+        }
+
+        [HttpGet("product-comments/{id}")]
+        public IActionResult GetProductComments(string id)
+        {
+            var comment = _proizvodService.GetProductComments(id);
+            return Ok(comment);
+        }
+
+        [HttpGet("unique-tags")]
+        public IActionResult GetUniqueTags()
+        {
+            var uniqueTags = _proizvodService.GetUniqueTags();
+            return Ok(uniqueTags);
         }
     }
 }
