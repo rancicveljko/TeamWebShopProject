@@ -138,3 +138,11 @@ C:\Users\Anja\Downloads\TeamWebShopProject 1\TeamWebShopProject\obj\Debug\net8.0
 C:\Users\Anja\Downloads\TeamWebShopProject 1\TeamWebShopProject\obj\Debug\net8.0\WebShop.pdb
 C:\Users\Anja\Downloads\TeamWebShopProject 1\TeamWebShopProject\obj\Debug\net8.0\WebShop.genruntimeconfig.cache
 C:\Users\Anja\Downloads\TeamWebShopProject 1\TeamWebShopProject\obj\Debug\net8.0\ref\WebShop.dll
+C:\Users\Lazar\Desktop\TeamWebShopProject\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Lazar\Desktop\TeamWebShopProject\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Lazar\Desktop\TeamWebShopProject\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Lazar\Desktop\TeamWebShopProject\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Lazar\Desktop\TeamWebShopProject\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Lazar\Desktop\TeamWebShopProject\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Lazar\Desktop\TeamWebShopProject\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Lazar\Desktop\TeamWebShopProject\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Anja\\Downloads\\TeamWebShopProject 1\\TeamWebShopProject\\WebShop.csproj": {}
+    "C:\\Users\\Lazar\\Desktop\\TeamWebShopProject\\WebShop.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Anja\\Downloads\\TeamWebShopProject 1\\TeamWebShopProject\\WebShop.csproj": {
+    "C:\\Users\\Lazar\\Desktop\\TeamWebShopProject\\WebShop.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Anja\\Downloads\\TeamWebShopProject 1\\TeamWebShopProject\\WebShop.csproj",
+        "projectUniqueName": "C:\\Users\\Lazar\\Desktop\\TeamWebShopProject\\WebShop.csproj",
         "projectName": "WebShop",
-        "projectPath": "C:\\Users\\Anja\\Downloads\\TeamWebShopProject 1\\TeamWebShopProject\\WebShop.csproj",
-        "packagesPath": "C:\\Users\\Anja\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Anja\\Downloads\\TeamWebShopProject 1\\TeamWebShopProject\\obj\\",
+        "projectPath": "C:\\Users\\Lazar\\Desktop\\TeamWebShopProject\\WebShop.csproj",
+        "packagesPath": "C:\\Users\\Lazar\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lazar\\Desktop\\TeamWebShopProject\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Anja\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Lazar\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -49,9 +49,17 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
             "Microsoft.Extensions.Options": {
               "target": "Package",
               "version": "[8.0.2, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[7.3.1, )"
             },
             "MongoDb.BSON": {
               "target": "Package",
@@ -64,6 +72,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[7.3.1, )"
             }
           },
           "imports": [
