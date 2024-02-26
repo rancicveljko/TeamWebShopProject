@@ -58,11 +58,11 @@ namespace WebShop.Services
         public void AddComment(int id, string komentar)
         {
 
-            var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);     
+            var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
             collection.FindOneAndUpdate(
             Builders<Proizvod>.Filter.Eq(p => p.Id, id),
             Builders<Proizvod>.Update.AddToSet(p => p.Comments, komentar));
-        
+
         }
 
         public string[] GetProductComments(string id)
@@ -78,6 +78,30 @@ namespace WebShop.Services
             var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
             var uniqueTags = collection.Distinct<string>("Tags", Builders<Proizvod>.Filter.Empty).ToList();
             return uniqueTags;
+        }
+        public void AddProduct(Proizvod proizvod)
+        {
+            var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
+            collection.InsertOne(proizvod);
+        }
+
+        public void UpdateProduct(string id, Proizvod updatedProizvod)
+        {
+            var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
+            var filter = Builders<Proizvod>.Filter.Eq("Id", id);
+            var update = Builders<Proizvod>.Update
+                .Set(p => p.Name, updatedProizvod.Name)
+                .Set(p => p.Price, updatedProizvod.Price)
+                .Set(p => p.Tags, updatedProizvod.Tags);
+
+            collection.UpdateOne(filter, update);
+        }
+
+        public void DeleteProduct(string id)
+        {
+            var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
+            var filter = Builders<Proizvod>.Filter.Eq("Id", id);
+            collection.DeleteOne(filter);
         }
     }
 }

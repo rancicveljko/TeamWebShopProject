@@ -67,5 +67,25 @@ namespace WebShop.Controllers
             var uniqueTags = _proizvodService.GetUniqueTags();
             return Ok(uniqueTags);
         }
+         [HttpPost("add-product")]
+        public IActionResult AddProduct(Proizvod proizvod)
+        {
+            _proizvodService.AddProduct(proizvod);
+            return Ok("Product successfully added.");
+        }
+
+        [HttpPut("update-product/{id}")]
+        public IActionResult UpdateProduct(string id, Proizvod updatedProizvod)
+        {
+            _proizvodService.UpdateProduct(id, updatedProizvod);
+            return Ok("Product successfully updated.");
+        }
+
+        [HttpDelete("delete-product/{id}")]
+        public IActionResult DeleteProduct(string id)
+        {
+            _proizvodService.DeleteProduct(id);
+            return Ok("Product successfully deleted.");
+        }
     }
 }
