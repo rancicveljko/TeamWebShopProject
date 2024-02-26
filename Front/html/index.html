@@ -3,16 +3,24 @@
 
 <head>
     <title>Web Shop</title>
-
-    <!--STYLE LINK-->
-    <link href="shopStyle.css" rel="stylesheet" />
-
-    <!--SCRIPT LINK-->
-    <script type="text/javascript" src="shopScript.js"></script>
+    <link href="../shopStyle.css" rel="stylesheet" />
+    <script type="text/javascript" src="../js/main.js"></script>
 </head>
 
 <body>
     <div align="left" style="min-height:800px;">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <span class="webshop-name">Web Shop</span>
+            </div>
+            <ul class="navbar-nav">
+                <li id="registerBtn">Register</li>
+                <li id="loginBtn">Login</li>
+                <li id="logoutBtn"  style="display:none;">Logout</li>
+                <li id="viewCartBtn" style="display:none;">View Cart</li>
+                <li id="adminOptionsBtn" style="display:none;">Add product</li>
+            </ul>
+        </nav>
 
         <div id="cart_wrapper" align="center">
 
@@ -34,13 +42,13 @@
 
         <div id="wrap" align="center">
 
-            <a id="show_cart" href="javascript:void(0)">View Cart</a>
+            <!-- <a id="show_cart" href="javascript:void(0)">View Cart</a> -->
 
             <div id="wrapul"></div>
             <br clear="all" />
             <div id="wrap-page-buttons">
                 <!-- <button onclick="currentPage=1; getProductList(currentPage, currentFilter)" id="button-page-1" class="page-button">1</button> -->
-                <!-- <button onclick="currentPage=2; getProductList(currentPage, currentFilter)" id="button-page-2" class="page-button">2</button>
+                <!-- <button onclick="currentPage=2; getProductList(currentPage, currentFilter)" id="button-page-2" class="page-button">2</button> -->
             </div>
         </div>
 

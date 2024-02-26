@@ -15,6 +15,8 @@ builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("Mo
 builder.Services.AddScoped<IProizvodService, ProizvodService>();
 builder.Services.AddScoped<IKorisnikService, KorisnikService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddSingleton<PasswordHasher, PasswordHasher>();
+builder.Services.AddHostedService<AdminSeederService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {

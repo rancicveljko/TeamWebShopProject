@@ -4,46 +4,47 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 
-namespace Ambulanta.Controllers;
-
-[ApiController]
-[Route("[controller]")]
-public class AdminController:ControllerBase
+namespace WebShop.Controllers
 {
-    private readonly IAdminService adminService;
-
-    public AdminController(IAdminService adminService, IConfiguration config)
+    [ApiController]
+    [Route("[controller]")]
+    public class AdminController:ControllerBase
     {
-        this.adminService = adminService;
-    }
+        private readonly IAdminService adminService;
 
-  
-
-    [HttpGet("GetAdminByEmail/{email}")]
-    public async Task<IActionResult> GetAdminByEmail(string email)
-    {
-        var admin = await adminService.GetAdminByEmailAsync(email);
-
-        if (admin == null)
+        public AdminController(IAdminService adminService, IConfiguration config)
         {
-            return NotFound($"Admin with email = {email} not found");
+            this.adminService = adminService;
         }
 
-        return Ok(admin);
-    }
     
-    [HttpPost("register")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Register([FromBody] RegistrationModelAdmin resource)
-    {
-        try
+
+        [HttpGet("GetAdminByEmail/{email}")]
+        public async Task<IActionResult> GetAdminByEmail(string email)
         {
-            var response = await adminService.Register(resource);
-            return Ok(response);
+            var admin = await adminService.GetAdminByEmailAsync(email);
+
+            if (admin == null)
+            {
+                return NotFound($"Admin with email = {email} not found");
+            }
+
+            return Ok(admin);
         }
-        catch (Exception e)
+        
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] RegistrationModelAdmin resource)
         {
-            return BadRequest(new { ErrorMessage = e.Message });
+            try
+            {
+                var response = await adminService.Register(resource);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { ErrorMessage = e.Message });
+            }
         }
     }
 }

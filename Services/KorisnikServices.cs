@@ -13,8 +13,6 @@ namespace WebShop.Services
         private readonly string _pepper;
         private readonly int _iteration;
 
-
-
         public KorisnikService(IOptions<MongoDbSettings> options, IConfiguration config)
         {
             _settings = options.Value;

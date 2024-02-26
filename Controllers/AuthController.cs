@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 
-namespace Ambulanta.Controllers
+namespace WebShop.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
@@ -18,10 +18,10 @@ namespace Ambulanta.Controllers
         private readonly IConfiguration _config;
         private readonly IKorisnikService _korisnik;
 
-        public AuthController(IConfiguration config, IKorisnikService pacijent)
+        public AuthController(IConfiguration config, IKorisnikService korisnik)
         {
             _config = config;
-            _korisnik = pacijent;
+            _korisnik = korisnik;
         }
 
         [AllowAnonymous]

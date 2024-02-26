@@ -4,6 +4,39 @@ body {
 	padding: 0;
 	border: 0;
 	outline: 0;
+	font-family: 'Arial', sans-serif;
+}
+
+.navbar {
+    background-color: #4c87af;
+    overflow: hidden;
+	color: white;
+    display: flex;
+    justify-content: space-between;
+}
+
+.webshop-name {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.navbar-nav {
+    list-style-type: none;
+    display: flex;
+}
+
+.navbar-nav li {
+    margin-right: 1rem;
+    cursor: pointer;
 }
 
 #wrap {
@@ -329,4 +362,49 @@ img.remove {
 }
 .add-comment-button:hover {
 	background: none repeat scroll 0 0 #4aa74f;
+}
+
+#registrationForm, #loginForm {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#registrationForm h2,  #loginForm h2 {
+	color: #333;
+	text-align: center;
+	margin-bottom: 20px;
+	text-transform: uppercase;
+}
+
+#registrationForm label, #loginForm label {
+    display: block;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+#registrationForm input,  #loginForm input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#registrationForm button,  #loginForm button {
+    background-color: #5da6d6;
+    color: white;
+    padding: 10px px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+	margin-left: 140px;
+}
+
+#registrationForm button:hover,  #loginForm button:hover {
+    background-color: #4c87af;
 }

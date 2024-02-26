@@ -23,9 +23,6 @@ namespace WebShop.Models
         public string PasswordSalt { get; set; }
         [BsonElement("Role")]
         public UserRole Role { get; set; }
-
-        [BsonElement("IstorijaPregleda")]
-        public List<ObjectId> IstorijaPregleda { get; set; } = new List<ObjectId>();
     }
 
     public enum UserRole

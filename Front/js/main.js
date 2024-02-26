@@ -256,6 +256,40 @@ function renderProducts(result) {
     addFilterBox();
 }
 document.addEventListener("DOMContentLoaded", function () {
+    var registerBtn = document.getElementById('registerBtn');
+    var loginBtn = document.getElementById('loginBtn');
+    var viewCartBtn = document.getElementById('viewCartBtn');
+    var adminOptionsBtn = document.getElementById('adminOptionsBtn');
+    var logoutBtn = document.getElementById('logoutBtn');
+    const token = localStorage.getItem("token");
+    console.log(token);
+    const userRole = localStorage.getItem("userRole");
+    console.log(userRole);
+    let isLoggedInAdmin = false;
+    let isLoggedInUser = false;
+    if (token) {
+        if(userRole == "admin")
+        {
+            isLoggedInAdmin = true;
+        }
+        else if(userRole == "user")
+        {
+            isLoggedInUser = true;
+        }
+    } 
+    console.log(isLoggedInUser);
+    if (isLoggedInUser) {
+        viewCartBtn.style.display = 'inline-block';
+        logoutBtn.style.display = 'inline-block';
+        registerBtn.style.display = 'none';
+        loginBtn.style.display = 'none';
+    }
+    if (isLoggedInAdmin) {
+        adminOptionsBtn.style.display = 'inline-block';
+        logoutBtn.style.display = 'inline-block';
+        registerBtn.style.display = 'none';
+        loginBtn.style.display = 'none';
+    }
     var _a, _b;
     singleLiOffset = 1000;
     currentOpenedBox = -1;
@@ -264,6 +298,7 @@ document.addEventListener("DOMContentLoaded", function () {
     getUniqueTags();
     getProductList(currentPage, "");
     getTotalProducts();
+
     document.addEventListener('click', function (e) {
         var _a;
         if (e.target.classList.contains('remove')) {
@@ -291,6 +326,19 @@ document.addEventListener("DOMContentLoaded", function () {
     (_b = document.getElementById('show_cart')) === null || _b === void 0 ? void 0 : _b.addEventListener('click', function () {
         document.getElementById('cart_wrapper').style.display = 'block';
     });
+    registerBtn.addEventListener('click', function () {
+        window.location.href = "../html/register.html";
+    });
+
+    loginBtn.addEventListener('click', function () {
+        window.location.href = "../html/login.html";
+    });
+
+    logoutBtn.addEventListener("click", function () {
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("token");
+        window.location.href = "../html/index.html";
+      });
 });
 function include(arr, obj) {
     return arr.includes(obj);
