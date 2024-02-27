@@ -148,17 +148,12 @@ body {
 }
 
 a#show_cart {
-	background: none repeat scroll 0 0 #FFFFFF;
-	border: 1px solid #E8E7DC;
 	cursor: pointer;
 	display: block;
 	display: inline-block;
 	font: 9px/21px "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, sans-serif;
 	letter-spacing: 2px;
-	color: #525049;
-	padding: 8px;
 	text-decoration: none;
-
 	text-transform: uppercase;
 }
 
@@ -235,21 +230,19 @@ img#cart {
 }
 
 #cart_wrapper {
-	border: solid #E8E7DC 1px;
-	min-height: 120px;
-	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	background-color: #f2f2f2;
 	padding-top: 15px;
-	display: none;
-	background: #E2E2E2;
 	font: 12px/21px "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, sans-serif;
-
-	position: relative
 }
 
 
 #Submit {
-	height: 78px;
-	float: left;
+	margin:10px;
 }
 
 .closeCart {
@@ -294,13 +287,17 @@ button:hover {
 	border-radius: 8px;
 	font-family: "LubalGraphBdBTBold", Tahoma;
 	margin-top: 3px;
-	width: 320px;
-	float: left;
+	width: 250px;
 }
 
 #cart_form {
-	width: 570px;
+	display: flex;
+	flex-direction: column;
+	width: auto;
 	padding-left: 15px;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
 }
 
 div.shopp span {
@@ -442,7 +439,7 @@ img.remove {
 	font: 15px "Helvetica Neue", Helvetica, "Nimbus Sans L";
     padding: 8px;
     border: 1px solid #fff;
-    background-color: #4c87afd2;
+    background-color: #4c87af;
     color: #fff;
     border-radius: 4px;
 	justify-content: center;

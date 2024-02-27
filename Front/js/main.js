@@ -65,8 +65,6 @@ function onAddToCart(target) {
         prevCharges += parseInt(itemprice);
         document.querySelector('.cart-total span').innerHTML = prevCharges.toString();
         document.getElementById('total-hidden-charges').setAttribute('value', prevCharges.toString());
-        var height = document.getElementById('cart_wrapper').offsetHeight;
-        document.getElementById('cart_wrapper').style.height = (height + 45) + "px";
         var cartInfo = document.getElementById('cart_wrapper').querySelector('.cart-info');
         var newCartItem = document.createElement('div');
         newCartItem.className = 'shopp';
@@ -74,6 +72,7 @@ function onAddToCart(target) {
         newCartItem.innerHTML = "\n            <div class=\"label\">".concat(itemname, "</div>\n            <div class=\"shopp-price\"> $<em>").concat(itemprice, "</em></div>\n            <span class=\"shopp-quantity\">1</span>\n            <img src=\"../Assets/remove.png\" class=\"remove\" />\n            <br class=\"all\" />\n        ");
         cartInfo === null || cartInfo === void 0 ? void 0 : cartInfo.appendChild(newCartItem);
     }
+    alert(itemname + " added to the cart!");
 }
 
 function getUniqueTags() {
@@ -476,8 +475,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     (_a = document.getElementById('Submit')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', function () {
         var totalCharge = document.getElementById('total-hidden-charges').value;
-        document.getElementById('cart_wrapper').innerHTML = 'Total Charges: $' + totalCharge;
-        return false;
+        var totalChargeBox = document.createElement('div');
+        totalChargeBox.className = "cart-total";
+        totalChargeBox.innerHTML = 'Total Charges: $' + totalCharge;
+        totalChargeBox.style.backgroundColor = "#4c87afd2";
+        totalChargeBox.style.color = "#ffffff";
+        totalChargeBox.style.fontSize = "15px";    
+        var cartWrapper = document.getElementById('cart_wrapper');
+        cartWrapper.innerHTML = "";        
+        cartWrapper.appendChild(totalChargeBox);
     });
     document.querySelectorAll('.closeCart').forEach(function (closeCart) {
         closeCart.addEventListener('click', function () {
@@ -485,9 +491,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
     (_b = document.getElementById('show_cart')) === null || _b === void 0 ? void 0 : _b.addEventListener('click', function () {
-        if (document.getElementById('cart_wrapper').style.display == 'none')
-            document.getElementById('cart_wrapper').style.display = 'block';
-        else document.getElementById('cart_wrapper').style.display = 'none';
+        if(document.getElementById('cart_wrapper').style.display == 'block')
+            document.getElementById('cart_wrapper').style.display = 'none';
+        else document.getElementById('cart_wrapper').style.display = 'block';
     });
     registerBtn.addEventListener('click', function () {
         window.location.href = "../html/register.html";
@@ -511,6 +517,7 @@ function getpos(arr, obj) {
 }
 function addFilterBox() {
     var filterContainer = document.getElementById("filter-container");
+    filterContainer.innerHTML = "";
     var filterOptions = document.createElement("div");
     filterOptions.className = "filter-options";
     filterContainer.appendChild(filterOptions);
@@ -533,8 +540,6 @@ function addFilterBox() {
         selectCategory.appendChild(optionTag);
     });
 
-    var buttonsContainer = document.getElementById("buttons-container");
-
     var btnApplyFilter = document.createElement("button");
     btnApplyFilter.id = "btn-apply-filter";
     btnApplyFilter.innerText = "Apply Filter";
@@ -542,7 +547,7 @@ function addFilterBox() {
         currentFilter = selectCategory.options[selectCategory.selectedIndex].value;
         getProductList(currentPage, currentFilter);
     });
-    buttonsContainer.appendChild(btnApplyFilter);
+    filterContainer.appendChild(btnApplyFilter);
 
     var btnClearFilter = document.createElement("button");
     btnClearFilter.id = "btn-clear-filter";
@@ -551,8 +556,7 @@ function addFilterBox() {
         currentFilter = "";
         getProductList(currentPage, currentFilter);
     });
-    buttonsContainer.appendChild(btnClearFilter);
-    filterContainer.appendChild(buttonsContainer);
+    filterContainer.appendChild(btnClearFilter);
 }
 
 function getTotalProducts() {

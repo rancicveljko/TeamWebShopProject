@@ -27,37 +27,27 @@
             <div id="buttons-container" class="buttons-container"></div>
         </div>
 
-        <div style="flex: 1; padding: 20px;">
+        <div id="wrap" align="center">
 
-            <div id="cart_wrapper" align="center">
-
-                <form action="#" id="cart_form" name="cart_form">
-
-                    <div class="cart-info"></div>
-
-                    <div class="cart-total">
-
-                        <b>Total Charges:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> $<span>0</span>
-
-                        <input type="hidden" name="total-hidden-charges" id="total-hidden-charges" value="0" />
-                    </div>
-
-                    <button type="submit" id="Submit">CheckOut</button>
-
-                </form>
+            <div id="wrapul"></div>
+            <br clear="all" />
+            <div id="wrap-page-buttons">
+                <!-- <button onclick="currentPage=1; getProductList(currentPage, currentFilter)" id="button-page-1" class="page-button">1</button> -->
+                <!-- <button onclick="currentPage=2; getProductList(currentPage, currentFilter)" id="button-page-2" class="page-button">2</button> -->
             </div>
-
-            <div id="wrap" align="center">
-
-                <div id="wrapul"></div>
-                <br clear="all" />
-                <div id="wrap-page-buttons">
-                    <!-- <button onclick="currentPage=1; getProductList(currentPage, currentFilter)" id="button-page-1" class="page-button">1</button> -->
-                    <!-- <button onclick="currentPage=2; getProductList(currentPage, currentFilter)" id="button-page-2" class="page-button">2</button> -->
-                </div>
-            </div>
-
         </div>
+
+        <div id="cart_wrapper"  style="width: auto; background-color: #f2f2f2; padding: 5px; display: none;">
+            <form action="#" id="cart_form" name="cart_form">
+                <div class="cart-info"></div>
+                <div class="cart-total">
+                    <b>Total Charges:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> $<span>0</span>
+                    <input type="hidden" name="total-hidden-charges" id="total-hidden-charges" value="0" />
+                </div>
+                <button type="submit" id="Submit">CheckOut</button>
+            </form>
+        </div>
+
     </div>
 </body>
 
