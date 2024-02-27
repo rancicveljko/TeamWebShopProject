@@ -9,7 +9,7 @@ var numOfRows = 2;
 function onProductClick(target, e) {
     var thisID = target.id;
     var id = Array.from(document.getElementById('wrap').querySelectorAll('li')).indexOf(target);
-    if (currentOpenedBox === id) { // if user clicks an opened box (li) again you close the box and return back
+    if (currentOpenedBox === id) {
         document.querySelectorAll("#wrap .detail-view").forEach(function (el) {
             el.style.display = "none";
         });
@@ -19,7 +19,6 @@ function onProductClick(target, e) {
     document.querySelectorAll("#wrap .detail-view").forEach(function (el) {
         el.style.display = "none";
     });
-    // save this id. so if user clicks an opened box li again you close the box.
     currentOpenedBox = id;
     var targetOffset = 0;
     if (id <= 3)
@@ -37,7 +36,7 @@ function onProductClick(target, e) {
     document.querySelectorAll("#wrap #detail-".concat(thisID)).forEach(function (el) {
         el.style.display = "block";
     });
-    
+
     return true;
 }
 function onAddToCart(target) {
@@ -113,12 +112,14 @@ function getProductList(page, filter) {
     xhr.send();
 }
 function renderProducts(result) {
+    var detailVievId=0;
     var ulWrap = document.getElementById("wrapul");
     ulWrap.innerHTML = "";
     var productList = document.createElement("ul");
     var prevProductItem = null;
     var prevDetailView = null;
     for (var i = 0; i < result.length; i++) {
+        detailVievId++;
         var product = result[i];
         var productItem = document.createElement("li");
         productItem.id = (i + 1).toString();
@@ -136,7 +137,8 @@ function renderProducts(result) {
         productItem.appendChild(productDiv);
         var detailView = document.createElement("div");
         detailView.className = "detail-view";
-        detailView.id = "detail-" + (i + 1).toString();
+       
+        detailView.id = "detail-" +detailVievId;
         var closeX = document.createElement("div");
         closeX.className = "close";
         closeX.setAttribute("align", "right");
@@ -176,13 +178,57 @@ function renderProducts(result) {
         var productButton = document.createElement("button");
         productButton.className = "add-to-cart-button";
         productButton.innerHTML = "Add to Cart";
+        productButton.id = "productButton";
 
+        var deleteProductBtn = document.createElement("button");
+        deleteProductBtn.innerHTML = "Delete Product";
+        deleteProductBtn.id = "deleteProductBtn";
+        deleteProductBtn.addEventListener('click', DeleteProduct(product.id));
+
+        var updateProductBtn = document.createElement("button");
+        updateProductBtn.innerHTML = "Update Product";
+        updateProductBtn.id = "updateProductBtn";
+        updateProductBtn.addEventListener('click', UpdateProduct(product.id,detailVievId));
 
         detailInfo.appendChild(itemName);
         detailInfo.appendChild(productBr);
         detailInfo.appendChild(productDesc);
         detailInfo.appendChild(productBr3);
+        const token = localStorage.getItem("token");
+        const userRole = localStorage.getItem("userRole");
+        let isLoggedInAdmin = false;
+        let isLoggedInUser = false;
+        if(!token)
+        {
+            productButton.style.display = 'none';
+            deleteProductBtn.style.display = 'none';
+            updateProductBtn.style.display = 'none';
+        }
+        if (token) {
+            if (userRole == "admin") {
+                isLoggedInAdmin = true;
+            }
+            else if (userRole == "user") {
+                isLoggedInUser = true;
+            }
+        }
+        console.log(isLoggedInUser);
+        if (isLoggedInUser) {
+
+            productButton.style.display = 'inline-block';
+            deleteProductBtn.style.display = 'none';
+            updateProductBtn.style.display = 'none';
+        }
+        if (isLoggedInAdmin) {
+
+            productButton.style.display = 'none';
+            deleteProductBtn.style.display = 'inline-block';
+            updateProductBtn.style.display = 'inline-block';
+
+        }
         detailInfo.appendChild(productButton);
+        detailInfo.appendChild(deleteProductBtn);
+        detailInfo.appendChild(updateProductBtn);
 
         const commentsSection = document.createElement("div");
         commentsSection.className = "comments-section";
@@ -196,7 +242,7 @@ function renderProducts(result) {
         commentsList.id = `comments-list-${product.id}`;
 
         getComments(product.id);
-    
+
         const commentInput = document.createElement("textarea");
         commentInput.className = "comment-input";
         commentInput.id = `comment-input-${product.id}`;
@@ -255,28 +301,131 @@ function renderProducts(result) {
     });
     addFilterBox();
 }
+function DeleteProduct(productId) {
+    return function() {
+        fetch(`http://localhost:5135/WebShop/delete-product/${productId}`, {
+            method: "DELETE",
+        })
+        .then((response) => {
+            if (!response.ok) {
+                alert("Greška prilikom brisanja proizvoda. Pokušajte ponovo!");
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response;
+        })
+        .then((data) => {
+            alert("Proizvod uspešno obrisan!");
+            window.location.reload();
+        
+        })
+        .catch((error) => {
+            console.error("Fetch error:", error);
+        });
+    
+    };
+}
+function UpdateProduct(productId,detailVievId) {
+    return function() {
+        var detailView = document.getElementById("detail-" + detailVievId);
+        
+        console.log("Detail View:", detailView);
+        
+        if (detailView) {
+            var updateForm = document.createElement("form");
+
+            var nameLabel = document.createElement("label");
+            nameLabel.innerHTML = "Name: ";
+            var nameInput = document.createElement("input");
+            nameInput.type = "text";
+            nameLabel.appendChild(nameInput);
+
+            var priceLabel = document.createElement("label");
+            priceLabel.innerHTML = "Price: ";
+            var priceInput = document.createElement("input");
+            priceInput.type = "number";
+            priceLabel.appendChild(priceInput);
+
+            var tagsLabel = document.createElement("label");
+            tagsLabel.innerHTML = "Tags: ";
+            var tagsInput = document.createElement("input");
+            tagsInput.type = "text";
+            tagsLabel.appendChild(tagsInput);
+
+            var updateButton = document.createElement("button");
+            updateButton.innerHTML = "Update";
+            updateButton.addEventListener('click', function() {
+                var updatedName = nameInput.value;
+                var updatedPrice = parseInt(priceInput.value);
+                var updatedTags = tagsInput.value.split(',');
+                UpdateProductOnServer(productId, updatedName, updatedPrice, updatedTags);
+            });
+
+            
+            updateForm.appendChild(nameLabel);
+            updateForm.appendChild(document.createElement("br"));
+            updateForm.appendChild(priceLabel);
+            updateForm.appendChild(document.createElement("br"));
+            updateForm.appendChild(tagsLabel);
+            updateForm.appendChild(document.createElement("br"));
+            updateForm.appendChild(updateButton);
+
+            var existingForm = detailView.querySelector("form");
+            if (existingForm) {
+                existingForm.remove();
+            }
+
+            detailView.appendChild(updateForm);
+        } else {
+            console.error("Detail view for product with ID " + productId + " not found.");
+        }
+    };
+}
+
+function UpdateProductOnServer(productId, name, price, tags) {
+    fetch(
+        `http://localhost:5135/WebShop/update-product/${productId}/${name}/${price}/${tags}`,
+        {
+            method: "PUT",
+        }
+    )
+    .then((response) => {
+        if (!response.ok) {
+            alert(
+                "Greška prilikom ažuriranja informacija o proizvodu. Pokušajte ponovo!"
+            );
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    })
+    .then((data) => {
+        alert("Vaše informacije su uspešno ažurirane!");
+    })
+    .catch((error) => {
+        console.error("Fetch error:", error);
+        alert("Greska!");
+    });
+}
+
+
 document.addEventListener("DOMContentLoaded", function () {
     var registerBtn = document.getElementById('registerBtn');
     var loginBtn = document.getElementById('loginBtn');
     var viewCartBtn = document.getElementById('viewCartBtn');
     var adminOptionsBtn = document.getElementById('adminOptionsBtn');
     var logoutBtn = document.getElementById('logoutBtn');
+
+
     const token = localStorage.getItem("token");
-    console.log(token);
     const userRole = localStorage.getItem("userRole");
-    console.log(userRole);
     let isLoggedInAdmin = false;
     let isLoggedInUser = false;
     if (token) {
-        if(userRole == "admin")
-        {
+        if (userRole == "admin") {
             isLoggedInAdmin = true;
         }
-        else if(userRole == "user")
-        {
+        else if (userRole == "user") {
             isLoggedInUser = true;
         }
-    } 
+    }
     console.log(isLoggedInUser);
     if (isLoggedInUser) {
         viewCartBtn.style.display = 'inline-block';
@@ -289,6 +438,9 @@ document.addEventListener("DOMContentLoaded", function () {
         logoutBtn.style.display = 'inline-block';
         registerBtn.style.display = 'none';
         loginBtn.style.display = 'none';
+        adminOptionsBtn.addEventListener('click', function () {
+            window.location.href = "../html/DodajProizvod.html";
+        });
     }
     var _a, _b;
     singleLiOffset = 1000;
@@ -338,7 +490,7 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.removeItem("userRole");
         localStorage.removeItem("token");
         window.location.href = "../html/index.html";
-      });
+    });
 });
 function include(arr, obj) {
     return arr.includes(obj);
@@ -425,13 +577,13 @@ function renderPages(totalProducts) {
 function showComments(comments, productID) {
     const commentsList = document.getElementById(`comments-list-${productID}`);
     commentsList.innerHTML = "";
-    if (Array.isArray(comments) && comments.length === 0) {       
+    if (Array.isArray(comments) && comments.length === 0) {
         const li = document.createElement("li");
         li.innerText = "No comments";
         commentsList?.appendChild(li);
     }
-    else{
-        comments.forEach(comment => {           
+    else {
+        comments.forEach(comment => {
             const li = document.createElement("li");
             li.innerText = comment;
             commentsList?.appendChild(li);
@@ -448,7 +600,7 @@ function addComment(target) {
     if (!comment) {
         alert("Comment cannot be empty.");
         return;
-    }   
+    }
 
     const url = `http://localhost:5135/WebShop/add-comment/${productID}/${comment}`;
     const data = { id: productID, komentar: comment };
@@ -460,23 +612,23 @@ function addComment(target) {
         },
         body: JSON.stringify(data),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-            return response.json();  
-        } else {
-            return response.text();  
-        }
-    })
-    .then(result => {
-        getComments(productID);
-    })
-    .catch(error => {
-        console.error('Error during POST request:', error);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                return response.json();
+            } else {
+                return response.text();
+            }
+        })
+        .then(result => {
+            getComments(productID);
+        })
+        .catch(error => {
+            console.error('Error during POST request:', error);
+        });
     const commentsList = document.getElementById(`comments-list-${productID}`);
     if (commentsList instanceof HTMLElement) {
         const commentItem = document.createElement("li");
@@ -490,7 +642,7 @@ function addComment(target) {
     commentInput.value = "";
 }
 
-function getComments(productID){
+function getComments(productID) {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:5135/WebShop/product-comments/${productID}`, true);
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");

@@ -11,7 +11,8 @@ namespace WebShop.Services
         string[] GetProductComments(string proizvodId);
         List<string> GetUniqueTags();
         void AddProduct(Proizvod proizvod);
-        void UpdateProduct(string id, Proizvod updatedProizvod);
+        //void UpdateProduct(string id, Proizvod updatedProizvod);
+        void UpdateProduct(string id, string name, int price, string[] tags);
         void DeleteProduct(string id);
 
     }

@@ -45,7 +45,7 @@ namespace WebShop.Controllers
         [HttpPost("add-comment/{id}/{comment}")]
         public IActionResult AddComment(int id, string comment)
         {
-            if(string.IsNullOrEmpty(comment))
+            if (string.IsNullOrEmpty(comment))
             {
                 return BadRequest("Comment cannot be empty.");
             }
@@ -67,25 +67,27 @@ namespace WebShop.Controllers
             var uniqueTags = _proizvodService.GetUniqueTags();
             return Ok(uniqueTags);
         }
-         [HttpPost("add-product")]
+        [HttpPost("add-product")]
         public IActionResult AddProduct(Proizvod proizvod)
         {
             _proizvodService.AddProduct(proizvod);
-            return Ok("Product successfully added.");
+            return NoContent();
         }
 
-        [HttpPut("update-product/{id}")]
-        public IActionResult UpdateProduct(string id, Proizvod updatedProizvod)
+        [HttpPut("update-product/{id}/{name}/{price}/{tags}")]
+        public IActionResult UpdateProduct(string id, string name, int price, string tags)
         {
-            _proizvodService.UpdateProduct(id, updatedProizvod);
-            return Ok("Product successfully updated.");
+            string[] tagsArray = tags.Split(',');
+            _proizvodService.UpdateProduct(id, name, price, tagsArray);
+            return NoContent();
         }
+
 
         [HttpDelete("delete-product/{id}")]
         public IActionResult DeleteProduct(string id)
         {
             _proizvodService.DeleteProduct(id);
-            return Ok("Product successfully deleted.");
+            return NoContent();
         }
     }
 }

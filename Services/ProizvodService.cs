@@ -85,17 +85,29 @@ namespace WebShop.Services
             collection.InsertOne(proizvod);
         }
 
-        public void UpdateProduct(string id, Proizvod updatedProizvod)
-        {
-            var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
-            var filter = Builders<Proizvod>.Filter.Eq("Id", id);
-            var update = Builders<Proizvod>.Update
-                .Set(p => p.Name, updatedProizvod.Name)
-                .Set(p => p.Price, updatedProizvod.Price)
-                .Set(p => p.Tags, updatedProizvod.Tags);
+        // public void UpdateProduct(string id, Proizvod updatedProizvod)
+        // {
+        //     var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
+        //     var filter = Builders<Proizvod>.Filter.Eq("Id", id);
+        //     var update = Builders<Proizvod>.Update
+        //         .Set(p => p.Name, updatedProizvod.Name)
+        //         .Set(p => p.Price, updatedProizvod.Price)
+        //         .Set(p => p.Tags, updatedProizvod.Tags);
 
-            collection.UpdateOne(filter, update);
-        }
+        //     collection.UpdateOne(filter, update);
+        // }
+        public void UpdateProduct(string id, string name, int price, string[] tags)
+{
+    var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
+    var filter = Builders<Proizvod>.Filter.Eq("Id", id);
+    var update = Builders<Proizvod>.Update
+        .Set("Name", name)
+        .Set("Price", price)
+        .Set("Tags", tags);
+
+    collection.UpdateOne(filter, update);
+}
+
 
         public void DeleteProduct(string id)
         {
