@@ -355,16 +355,16 @@ img.remove {
 .add-comment-button {
 	cursor: pointer;
 	padding: 7px;
-	background-color: #4caf50;
+	background-color: #4c87af;
 	color: white;
 	border: none;
 	border-radius: 4px;
 }
 .add-comment-button:hover {
-	background: none repeat scroll 0 0 #4aa74f;
+	background: none repeat scroll 0 0 #4c87af65;
 }
 
-#registrationForm, #loginForm {
+#registrationForm, #loginForm, #addProductForm {
     max-width: 400px;
     margin: 0 auto;
     background-color: #fff;
@@ -373,20 +373,20 @@ img.remove {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-#registrationForm h2,  #loginForm h2 {
+#registrationForm h2,  #loginForm h2, #addProductForm h2 {
 	color: #333;
 	text-align: center;
 	margin-bottom: 20px;
 	text-transform: uppercase;
 }
 
-#registrationForm label, #loginForm label {
+#registrationForm label, #loginForm label, #addProductForm label {
     display: block;
     margin: 10px 0;
     font-weight: bold;
 }
 
-#registrationForm input,  #loginForm input {
+#registrationForm input,  #loginForm input, #addProductForm input {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
@@ -395,8 +395,8 @@ img.remove {
     border-radius: 4px;
 }
 
-#registrationForm button,  #loginForm button {
-    background-color: #5da6d6;
+#registrationForm button,  #loginForm button, #addProductForm button {
+    background-color: #4c87af;
     color: white;
     padding: 10px px;
     border: none;
@@ -405,6 +405,52 @@ img.remove {
 	margin-left: 140px;
 }
 
-#registrationForm button:hover,  #loginForm button:hover {
+#registrationForm button:hover,  #loginForm button:hover, #addProductForm button:hover {
     background-color: #4c87af;
+}
+
+.filter-container {
+    display: flex;
+	flex-direction: column;
+    justify-content: space-between;
+    justify-content: center;
+	text-align: center;
+	align-items: center;
+    padding: 10px;
+    background-color: #4c87afd2;
+	border-radius: 4px;
+    color: white;
+}
+
+.filter-options {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
+	align-items: center;
+    gap: 20px;
+}
+.filter-options label {
+    font-size: 14px;
+    margin-right: 8px;
+	justify-content: center;
+	text-align: center;
+	align-items: center;
+}
+
+.filter-select {
+	font: 15px "Helvetica Neue", Helvetica, "Nimbus Sans L";
+    padding: 8px;
+    border: 1px solid #fff;
+    background-color: #4c87afd2;
+    color: #fff;
+    border-radius: 4px;
+	justify-content: center;
+	text-align: center;
+	align-items: center;
+}
+
+#btn-apply-filter, #btn-clear-filter
+{
+	margin: 10px;
 }

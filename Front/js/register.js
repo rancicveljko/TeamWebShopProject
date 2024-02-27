@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         password: password,
       };
   
-      fetch("http://localhost:5154/Korisnik/register", {
+      fetch("http://localhost:5135/Korisnik/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,11 +36,10 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then((result) => {
           alert("Successful user registration!");
-          console.log(result);
+          window.location.href = "../html/index.html";
         })
         .catch((error) => {
           console.error("Error:", error);
-        });
-      window.location.href = "../html/index.html";
+        });      
     });
 });

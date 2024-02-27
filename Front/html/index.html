@@ -8,51 +8,56 @@
 </head>
 
 <body>
-    <div align="left" style="min-height:800px;">
-        <nav class="navbar">
-            <div class="navbar-brand">
-                <span class="webshop-name">Web Shop</span>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a href="index.html" class="webshop-name">Web Shop</a>
+        </div>
+        <ul class="navbar-nav">
+            <li id="registerBtn">Register</li>
+            <li id="loginBtn">Login</li>
+            <li id="logoutBtn" style="display:none;">Logout</li>
+            <li id="show_cart" style="display: none;">View Cart</li>
+            <li id="adminOptionsBtn" style="display:none;">Add product</li>
+        </ul>
+    </nav>
+    <div align="left" style="min-height:800px; display: flex;">
+
+        <div id="sidebar" style="width: 200px; background-color: #f2f2f2; padding: 20px;">
+            <div id="filter-container" class="filter-container"></div>
+            <div id="buttons-container" class="buttons-container"></div>
+        </div>
+
+        <div style="flex: 1; padding: 20px;">
+
+            <div id="cart_wrapper" align="center">
+
+                <form action="#" id="cart_form" name="cart_form">
+
+                    <div class="cart-info"></div>
+
+                    <div class="cart-total">
+
+                        <b>Total Charges:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> $<span>0</span>
+
+                        <input type="hidden" name="total-hidden-charges" id="total-hidden-charges" value="0" />
+                    </div>
+
+                    <button type="submit" id="Submit">CheckOut</button>
+
+                </form>
             </div>
-            <ul class="navbar-nav">
-                <li id="registerBtn">Register</li>
-                <li id="loginBtn">Login</li>
-                <li id="logoutBtn"  style="display:none;">Logout</li>
-                <li id="viewCartBtn" style="display:none;">View Cart</li>
-                <li id="adminOptionsBtn" style="display:none;">Add product</li>
-            </ul>
-        </nav>
 
-        <div id="cart_wrapper" align="center">
+            <div id="wrap" align="center">
 
-            <form action="#" id="cart_form" name="cart_form">
-
-                <div class="cart-info"></div>
-
-                <div class="cart-total">
-
-                    <b>Total Charges:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> $<span>0</span>
-
-                    <input type="hidden" name="total-hidden-charges" id="total-hidden-charges" value="0" />
+                <div id="wrapul"></div>
+                <br clear="all" />
+                <div id="wrap-page-buttons">
+                    <!-- <button onclick="currentPage=1; getProductList(currentPage, currentFilter)" id="button-page-1" class="page-button">1</button> -->
+                    <!-- <button onclick="currentPage=2; getProductList(currentPage, currentFilter)" id="button-page-2" class="page-button">2</button> -->
                 </div>
-
-                <button type="submit" id="Submit">CheckOut</button>
-
-            </form>
-        </div>
-
-        <div id="wrap" align="center">
-
-            <!-- <a id="show_cart" href="javascript:void(0)">View Cart</a> -->
-
-            <div id="wrapul"></div>
-            <br clear="all" />
-            <div id="wrap-page-buttons">
-                <!-- <button onclick="currentPage=1; getProductList(currentPage, currentFilter)" id="button-page-1" class="page-button">1</button> -->
-                <!-- <button onclick="currentPage=2; getProductList(currentPage, currentFilter)" id="button-page-2" class="page-button">2</button> -->
             </div>
+
         </div>
-
-
     </div>
 </body>
 

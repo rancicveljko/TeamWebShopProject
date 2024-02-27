@@ -83,9 +83,11 @@ function getUniqueTags() {
         if (xhr.readyState == 4) {
             if (xhr.status == 200) {
                 var result = JSON.parse(xhr.response);
+                tagsSet.clear();
                 result.forEach(tag => {
                     tagsSet.add(tag);
                 });
+                addFilterBox();
             } else {
                 alert("Error loading tags");
             }
@@ -224,7 +226,6 @@ function renderProducts(result) {
             productButton.style.display = 'none';
             deleteProductBtn.style.display = 'inline-block';
             updateProductBtn.style.display = 'inline-block';
-
         }
         detailInfo.appendChild(productButton);
         detailInfo.appendChild(deleteProductBtn);
@@ -242,24 +243,27 @@ function renderProducts(result) {
         commentsList.id = `comments-list-${product.id}`;
 
         getComments(product.id);
-
-        const commentInput = document.createElement("textarea");
-        commentInput.className = "comment-input";
-        commentInput.id = `comment-input-${product.id}`;
-        commentInput.placeholder = "Enter a comment";
-
-        var addCommentButton = document.createElement("button");
-        addCommentButton.className = "add-comment-button";
-        addCommentButton.innerText = "Add comment";
-
         commentsSection.appendChild(commentsHeader);
         commentsSection.appendChild(commentsList);
-        const inputAndButtonContainer = document.createElement("div");
-        inputAndButtonContainer.classList.add("input-and-button-container");
-        inputAndButtonContainer.appendChild(commentInput);
-        inputAndButtonContainer.appendChild(addCommentButton);
 
-        commentsSection.appendChild(inputAndButtonContainer);
+        if (isLoggedInUser) {
+            const commentInput = document.createElement("textarea");
+            commentInput.className = "comment-input";
+            commentInput.id = `comment-input-${product.id}`;
+            commentInput.placeholder = "Enter a comment";
+    
+            var addCommentButton = document.createElement("button");
+            addCommentButton.className = "add-comment-button";
+            addCommentButton.innerText = "Add comment";
+    
+            
+            const inputAndButtonContainer = document.createElement("div");
+            inputAndButtonContainer.classList.add("input-and-button-container");
+            inputAndButtonContainer.appendChild(commentInput);
+            inputAndButtonContainer.appendChild(addCommentButton);
+    
+            commentsSection.appendChild(inputAndButtonContainer);
+        }        
 
         detailView.appendChild(closeX);
         detailView.appendChild(productImageDetail);
@@ -299,7 +303,7 @@ function renderProducts(result) {
             });
         });
     });
-    addFilterBox();
+    getUniqueTags();
 }
 function DeleteProduct(productId) {
     return function() {
@@ -409,7 +413,7 @@ function UpdateProductOnServer(productId, name, price, tags) {
 document.addEventListener("DOMContentLoaded", function () {
     var registerBtn = document.getElementById('registerBtn');
     var loginBtn = document.getElementById('loginBtn');
-    var viewCartBtn = document.getElementById('viewCartBtn');
+    var viewCartBtn = document.getElementById('show_cart');
     var adminOptionsBtn = document.getElementById('adminOptionsBtn');
     var logoutBtn = document.getElementById('logoutBtn');
 
@@ -439,7 +443,7 @@ document.addEventListener("DOMContentLoaded", function () {
         registerBtn.style.display = 'none';
         loginBtn.style.display = 'none';
         adminOptionsBtn.addEventListener('click', function () {
-            window.location.href = "../html/DodajProizvod.html";
+            window.location.href = "../html/dodajProizvod.html";
         });
     }
     var _a, _b;
@@ -447,7 +451,6 @@ document.addEventListener("DOMContentLoaded", function () {
     currentOpenedBox = -1;
     arrays = new Array();
     currentPage = 1;
-    getUniqueTags();
     getProductList(currentPage, "");
     getTotalProducts();
 
@@ -476,7 +479,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
     (_b = document.getElementById('show_cart')) === null || _b === void 0 ? void 0 : _b.addEventListener('click', function () {
-        document.getElementById('cart_wrapper').style.display = 'block';
+        if(document.getElementById('cart_wrapper').style.display == 'none')
+            document.getElementById('cart_wrapper').style.display = 'block';
+        else document.getElementById('cart_wrapper').style.display = 'none';
     });
     registerBtn.addEventListener('click', function () {
         window.location.href = "../html/register.html";
@@ -499,32 +504,40 @@ function getpos(arr, obj) {
     return arr.indexOf(obj);
 }
 function addFilterBox() {
-    var wrapUl = document.getElementById("wrapul");
-    var newDiv = document.createElement("div");
-    newDiv.id = "wrap-select";
-    wrapUl.appendChild(newDiv);
-    var selLabel = document.createElement("label");
-    selLabel.className = "select-label";
-    selLabel.innerText = "Filter:";
-    newDiv.appendChild(selLabel);
-    var newSelect = document.createElement("select");
-    newSelect.id = "filter-select";
-    newDiv.appendChild(newSelect);
+    var filterContainer = document.getElementById("filter-container");
+    var filterOptions = document.createElement("div");
+    filterOptions.className = "filter-options";
+    filterContainer.appendChild(filterOptions);
+
+    var labelCategory = document.createElement("label");
+    labelCategory.for = "category";
+    labelCategory.className = "label-category";
+    labelCategory.innerText = "Category:";
+    filterOptions.appendChild(labelCategory);
+
+    var selectCategory = document.createElement("select");
+    selectCategory.className = "filter-select";
+    selectCategory.id = "category";
+    filterOptions.appendChild(selectCategory);
+
     tagsSet.forEach(function (tag) {
-        var newOpt = document.createElement("option");
-        newOpt.value = tag;
-        newOpt.innerText = tag;
-        newSelect.appendChild(newOpt);
+        var optionTag = document.createElement("option");
+        optionTag.value = tag;
+        optionTag.innerText = tag;
+        selectCategory.appendChild(optionTag);
     });
-    newDiv.appendChild(document.createElement("br"));
+
+    var buttonsContainer = document.getElementById("buttons-container");
+
     var btnApplyFilter = document.createElement("button");
     btnApplyFilter.id = "btn-apply-filter";
     btnApplyFilter.innerText = "Apply Filter";
     btnApplyFilter.addEventListener("click", function (e) {
-        currentFilter = newSelect.options[newSelect.selectedIndex].value;
+        currentFilter = selectCategory.options[selectCategory.selectedIndex].value;
         getProductList(currentPage, currentFilter);
     });
-    newDiv.appendChild(btnApplyFilter);
+    buttonsContainer.appendChild(btnApplyFilter);
+
     var btnClearFilter = document.createElement("button");
     btnClearFilter.id = "btn-clear-filter";
     btnClearFilter.innerText = "Clear Filter";
@@ -532,8 +545,10 @@ function addFilterBox() {
         currentFilter = "";
         getProductList(currentPage, currentFilter);
     });
-    newDiv.appendChild(btnClearFilter);
+    buttonsContainer.appendChild(btnClearFilter);
+    filterContainer.appendChild(buttonsContainer);
 }
+
 function getTotalProducts() {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "http://localhost:5135/WebShop/total-products", true);

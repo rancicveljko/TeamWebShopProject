@@ -1,74 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
+    <link href="../shopStyle.css" rel="stylesheet" />
+    <script type="text/javascript" src="../js/dodajProizvod.js"></script>
 </head>
 <body>
-    <h1>Add Product</h1>
-    <form id="addProductForm">
-        <label for="id">ID:</label><br>
-        <input type="number" id="id" name="id" required><br>
+    <div align="left" style="min-height:800px;">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <a href="index.html" class="webshop-name">Web Shop</a>
+            </div>
+        </nav>
 
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" required><br>
-        
-        <label for="imageURL">Image URL:</label><br>
-        <input type="text" id="imageURL" name="imageURL" required><br>
-        
-        <label for="tags">Tags (comma separated):</label><br>
-        <input type="text" id="tags" name="tags" required><br>
-        
-        <label for="price">Price:</label><br>
-        <input type="number" id="price" name="price" required><br>
-        
-        <button type="submit">Add Product</button>
-    </form>
+        <div class="container">
+            <h2>Add Product</h2>
+            <form id="addProductForm">
+                <label for="id">ID:</label><br>
+                <input type="number" id="id" name="id" required><br>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const addProductForm = document.getElementById('addProductForm');
+                <label for="name">Name:</label><br>
+                <input type="text" id="name" name="name" required><br>
+                
+                <label for="imageURL">Image URL:</label><br>
+                <input type="text" id="imageURL" name="imageURL" required><br>
+                
+                <label for="tags">Tags (comma separated):</label><br>
+                <input type="text" id="tags" name="tags" required><br>
+                
+                <label for="price">Price:</label><br>
+                <input type="number" id="price" name="price" required><br>
+                
+                <button type="submit">Add Product</button>
+            </form>
+        </div>
 
-            addProductForm.addEventListener('submit', function (event) {
-                event.preventDefault();
-
-                const formData = new FormData(addProductForm);
-                const tags = formData.get('tags').split(',').map(tag => tag.trim());
-
-                const productData = {
-                    id: parseInt(formData.get('id')),
-                    name: formData.get('name'),
-                    imageURL: formData.get('imageURL'),
-                    tags: tags,
-                    price: parseFloat(formData.get('price')),
-                    comments: []
-                };
-
-                fetch('http://localhost:5135/WebShop/add-product', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(productData),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response;  
-                  
-                })
-                .then(data => {
-                    alert('Product successfully added.');
-                    addProductForm.reset();
-                })
-                .catch(error => {
-                    console.error('Error during POST request:', error);
-                    alert('An error occurred while adding the product.');
-                });
-            });
-        });
-    </script>
+    </div>
 </body>
 </html>
