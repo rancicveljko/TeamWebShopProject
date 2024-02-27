@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const tags = formData.get('tags').split(',').map(tag => tag.trim());
 
         const productData = {
-            id: parseInt(formData.get('id')),
             name: formData.get('name'),
             imageURL: formData.get('imageURL'),
             tags: tags,

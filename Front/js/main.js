@@ -6,6 +6,7 @@ var currentPage;
 var currentFilter = "";
 var itemsPerRow = 4;
 var numOfRows = 2;
+
 function onProductClick(target, e) {
     var thisID = target.id;
     var id = Array.from(document.getElementById('wrap').querySelectorAll('li')).indexOf(target);
@@ -114,7 +115,7 @@ function getProductList(page, filter) {
     xhr.send();
 }
 function renderProducts(result) {
-    var detailVievId=0;
+    var detailVievId = 0;
     var ulWrap = document.getElementById("wrapul");
     ulWrap.innerHTML = "";
     var productList = document.createElement("ul");
@@ -133,14 +134,14 @@ function renderProducts(result) {
         productBr.setAttribute("clear", "all");
         var productDiv = document.createElement("div");
         productDiv.innerHTML = product.name;
-        productDiv.id = product.id;
+        productDiv.id = toId(product.id);
         productItem.appendChild(productImage);
         productItem.appendChild(productBr);
         productItem.appendChild(productDiv);
         var detailView = document.createElement("div");
         detailView.className = "detail-view";
-       
-        detailView.id = "detail-" +detailVievId;
+
+        detailView.id = "detail-" + detailVievId;
         var closeX = document.createElement("div");
         closeX.className = "close";
         closeX.setAttribute("align", "right");
@@ -185,12 +186,12 @@ function renderProducts(result) {
         var deleteProductBtn = document.createElement("button");
         deleteProductBtn.innerHTML = "Delete Product";
         deleteProductBtn.id = "deleteProductBtn";
-        deleteProductBtn.addEventListener('click', DeleteProduct(product.id));
+        deleteProductBtn.addEventListener('click', DeleteProduct(toId(product.id)));
 
         var updateProductBtn = document.createElement("button");
         updateProductBtn.innerHTML = "Update Product";
         updateProductBtn.id = "updateProductBtn";
-        updateProductBtn.addEventListener('click', UpdateProduct(product.id,detailVievId));
+        updateProductBtn.addEventListener('click', UpdateProduct(toId(product.id), product.name, product.price, product.tags, detailVievId));
 
         detailInfo.appendChild(itemName);
         detailInfo.appendChild(productBr);
@@ -200,8 +201,7 @@ function renderProducts(result) {
         const userRole = localStorage.getItem("userRole");
         let isLoggedInAdmin = false;
         let isLoggedInUser = false;
-        if(!token)
-        {
+        if (!token) {
             productButton.style.display = 'none';
             deleteProductBtn.style.display = 'none';
             updateProductBtn.style.display = 'none';
@@ -233,37 +233,37 @@ function renderProducts(result) {
 
         const commentsSection = document.createElement("div");
         commentsSection.className = "comments-section";
-        commentsSection.id = `${product.id}`;
+        commentsSection.id = `${toId(product.id)}`;
         commentsSection.className = "comments_section";
 
         const commentsHeader = document.createElement("h3");
         commentsHeader.innerText = "Comments:";
 
         const commentsList = document.createElement("ul");
-        commentsList.id = `comments-list-${product.id}`;
+        commentsList.id = `comments-list-${toId(product.id)}`;
 
-        getComments(product.id);
+        getComments(toId(product.id));
         commentsSection.appendChild(commentsHeader);
         commentsSection.appendChild(commentsList);
 
         if (isLoggedInUser) {
             const commentInput = document.createElement("textarea");
             commentInput.className = "comment-input";
-            commentInput.id = `comment-input-${product.id}`;
+            commentInput.id = `comment-input-${toId(product.id)}`;
             commentInput.placeholder = "Enter a comment";
-    
+
             var addCommentButton = document.createElement("button");
             addCommentButton.className = "add-comment-button";
             addCommentButton.innerText = "Add comment";
-    
-            
+
+
             const inputAndButtonContainer = document.createElement("div");
             inputAndButtonContainer.classList.add("input-and-button-container");
             inputAndButtonContainer.appendChild(commentInput);
             inputAndButtonContainer.appendChild(addCommentButton);
-    
+
             commentsSection.appendChild(inputAndButtonContainer);
-        }        
+        }
 
         detailView.appendChild(closeX);
         detailView.appendChild(productImageDetail);
@@ -306,72 +306,78 @@ function renderProducts(result) {
     getUniqueTags();
 }
 function DeleteProduct(productId) {
-    return function() {
+    return function () {
         fetch(`http://localhost:5135/WebShop/delete-product/${productId}`, {
             method: "DELETE",
         })
-        .then((response) => {
-            if (!response.ok) {
-                alert("Greška prilikom brisanja proizvoda. Pokušajte ponovo!");
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response;
-        })
-        .then((data) => {
-            alert("Proizvod uspešno obrisan!");
-            window.location.reload();
-        
-        })
-        .catch((error) => {
-            console.error("Fetch error:", error);
-        });
-    
+            .then((response) => {
+                if (!response.ok) {
+                    alert("Greška prilikom brisanja proizvoda. Pokušajte ponovo!");
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response;
+            })
+            .then((data) => {
+                alert("Proizvod uspešno obrisan!");
+                window.location.reload();
+
+            })
+            .catch((error) => {
+                console.error("Fetch error:", error);
+            });
+
     };
 }
-function UpdateProduct(productId,detailVievId) {
-    return function() {
+function UpdateProduct(productId, name, price, tags, detailVievId) {
+    return function () {
         var detailView = document.getElementById("detail-" + detailVievId);
-        
+
         console.log("Detail View:", detailView);
-        
+
         if (detailView) {
             var updateForm = document.createElement("form");
 
             var nameLabel = document.createElement("label");
             nameLabel.innerHTML = "Name: ";
+
             var nameInput = document.createElement("input");
             nameInput.type = "text";
-            nameLabel.appendChild(nameInput);
+            nameInput.value = name;
+
 
             var priceLabel = document.createElement("label");
             priceLabel.innerHTML = "Price: ";
             var priceInput = document.createElement("input");
             priceInput.type = "number";
-            priceLabel.appendChild(priceInput);
+            priceInput.value = price;
+
 
             var tagsLabel = document.createElement("label");
             tagsLabel.innerHTML = "Tags: ";
             var tagsInput = document.createElement("input");
             tagsInput.type = "text";
-            tagsLabel.appendChild(tagsInput);
+            tagsInput.value = tags.join(", ");
+
 
             var updateButton = document.createElement("button");
             updateButton.innerHTML = "Update";
-            updateButton.addEventListener('click', function() {
+            updateButton.addEventListener('click', function () {
                 var updatedName = nameInput.value;
                 var updatedPrice = parseInt(priceInput.value);
                 var updatedTags = tagsInput.value.split(',');
                 UpdateProductOnServer(productId, updatedName, updatedPrice, updatedTags);
             });
 
-            
+            updateForm.appendChild(updateButton);
+            updateForm.appendChild(document.createElement("br"));
             updateForm.appendChild(nameLabel);
+            updateForm.appendChild(nameInput);
             updateForm.appendChild(document.createElement("br"));
             updateForm.appendChild(priceLabel);
+            updateForm.appendChild(priceInput);
             updateForm.appendChild(document.createElement("br"));
             updateForm.appendChild(tagsLabel);
-            updateForm.appendChild(document.createElement("br"));
-            updateForm.appendChild(updateButton);
+            updateForm.appendChild(tagsInput);
 
             var existingForm = detailView.querySelector("form");
             if (existingForm) {
@@ -392,21 +398,21 @@ function UpdateProductOnServer(productId, name, price, tags) {
             method: "PUT",
         }
     )
-    .then((response) => {
-        if (!response.ok) {
-            alert(
-                "Greška prilikom ažuriranja informacija o proizvodu. Pokušajte ponovo!"
-            );
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-    })
-    .then((data) => {
-        alert("Vaše informacije su uspešno ažurirane!");
-    })
-    .catch((error) => {
-        console.error("Fetch error:", error);
-        alert("Greska!");
-    });
+        .then((response) => {
+            if (!response.ok) {
+                alert(
+                    "Greška prilikom ažuriranja informacija o proizvodu. Pokušajte ponovo!"
+                );
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+        })
+        .then((data) => {
+            alert("Vaše informacije su uspešno ažurirane!");
+        })
+        .catch((error) => {
+            console.error("Fetch error:", error);
+            alert("Greska!");
+        });
 }
 
 
@@ -479,7 +485,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
     (_b = document.getElementById('show_cart')) === null || _b === void 0 ? void 0 : _b.addEventListener('click', function () {
-        if(document.getElementById('cart_wrapper').style.display == 'none')
+        if (document.getElementById('cart_wrapper').style.display == 'none')
             document.getElementById('cart_wrapper').style.display = 'block';
         else document.getElementById('cart_wrapper').style.display = 'none';
     });
@@ -675,3 +681,11 @@ function getComments(productID) {
 
     xhr.send();
 }
+function toId(id) {
+    const objectIdString =
+      id.timestamp.toString(16).padStart(8, "0") +
+      id.machine.toString(16).padStart(6, "0") +
+      ((id.pid >>> 0) & 0xffff).toString(16).padStart(4, "0") +
+      id.increment.toString(16).padStart(6, "0");
+    return objectIdString;
+  }

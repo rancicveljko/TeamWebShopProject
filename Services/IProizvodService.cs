@@ -1,3 +1,4 @@
+using MongoDB.Bson;
 using WebShop.Models;
 
 namespace WebShop.Services
@@ -5,15 +6,15 @@ namespace WebShop.Services
     public interface IProizvodService
     {
         List<Proizvod> GetProductList(int page, string tag);
-        Proizvod GetProductDetails(string id);
+        Proizvod GetProductDetails(ObjectId id);
         long GetTotalNumberOfProducts();
-        void AddComment(int proizvodId, string komentar);
-        string[] GetProductComments(string proizvodId);
+        void AddComment(ObjectId proizvodId, string komentar);
+        string[] GetProductComments(ObjectId proizvodId);
         List<string> GetUniqueTags();
         void AddProduct(Proizvod proizvod);
         //void UpdateProduct(string id, Proizvod updatedProizvod);
-        void UpdateProduct(string id, string name, int price, string[] tags);
-        void DeleteProduct(string id);
+        void UpdateProduct(ObjectId id, string name, int price, string[] tags);
+        void DeleteProduct(ObjectId id);
 
     }
 

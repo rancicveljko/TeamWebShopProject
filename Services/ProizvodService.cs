@@ -42,7 +42,7 @@ namespace WebShop.Services
             return products;
         }
 
-        public Proizvod GetProductDetails(string id)
+        public Proizvod GetProductDetails(ObjectId id)
         {
             var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
             var filter = Builders<Proizvod>.Filter.Eq("Id", id);
@@ -55,7 +55,7 @@ namespace WebShop.Services
             return collection.CountDocuments(Builders<Proizvod>.Filter.Empty);
         }
 
-        public void AddComment(int id, string komentar)
+        public void AddComment(ObjectId id, string komentar)
         {
 
             var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
@@ -65,7 +65,7 @@ namespace WebShop.Services
 
         }
 
-        public string[] GetProductComments(string id)
+        public string[] GetProductComments(ObjectId id)
         {
             var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
             var filter = Builders<Proizvod>.Filter.Eq("Id", id);
@@ -96,20 +96,20 @@ namespace WebShop.Services
 
         //     collection.UpdateOne(filter, update);
         // }
-        public void UpdateProduct(string id, string name, int price, string[] tags)
-{
-    var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
-    var filter = Builders<Proizvod>.Filter.Eq("Id", id);
-    var update = Builders<Proizvod>.Update
-        .Set("Name", name)
-        .Set("Price", price)
-        .Set("Tags", tags);
+        public void UpdateProduct(ObjectId id, string name, int price, string[] tags)
+        {
+            var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
+            var filter = Builders<Proizvod>.Filter.Eq("Id", id);
+            var update = Builders<Proizvod>.Update
+                .Set("Name", name)
+                .Set("Price", price)
+                .Set("Tags", tags);
 
-    collection.UpdateOne(filter, update);
-}
+            collection.UpdateOne(filter, update);
+        }
 
 
-        public void DeleteProduct(string id)
+        public void DeleteProduct(ObjectId id)
         {
             var collection = _database.GetCollection<Proizvod>(_settings.CollectionName);
             var filter = Builders<Proizvod>.Filter.Eq("Id", id);

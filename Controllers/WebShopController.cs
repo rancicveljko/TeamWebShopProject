@@ -2,6 +2,7 @@ using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.Services;
 using WebShop.Models;
+using MongoDB.Bson;
 
 namespace WebShop.Controllers
 {
@@ -25,7 +26,7 @@ namespace WebShop.Controllers
         }
 
         [HttpGet("product-details/{id}")]
-        public IActionResult GetProductDetails(string id)
+        public IActionResult GetProductDetails(ObjectId id)
         {
             var productDetails = _proizvodService.GetProductDetails(id);
             if (productDetails == null)
@@ -43,7 +44,7 @@ namespace WebShop.Controllers
         }
 
         [HttpPost("add-comment/{id}/{comment}")]
-        public IActionResult AddComment(int id, string comment)
+        public IActionResult AddComment(ObjectId id, string comment)
         {
             if (string.IsNullOrEmpty(comment))
             {
@@ -55,7 +56,7 @@ namespace WebShop.Controllers
         }
 
         [HttpGet("product-comments/{id}")]
-        public IActionResult GetProductComments(string id)
+        public IActionResult GetProductComments(ObjectId id)
         {
             var comment = _proizvodService.GetProductComments(id);
             return Ok(comment);
@@ -75,7 +76,7 @@ namespace WebShop.Controllers
         }
 
         [HttpPut("update-product/{id}/{name}/{price}/{tags}")]
-        public IActionResult UpdateProduct(string id, string name, int price, string tags)
+        public IActionResult UpdateProduct(ObjectId id, string name, int price, string tags)
         {
             string[] tagsArray = tags.Split(',');
             _proizvodService.UpdateProduct(id, name, price, tagsArray);
@@ -84,7 +85,7 @@ namespace WebShop.Controllers
 
 
         [HttpDelete("delete-product/{id}")]
-        public IActionResult DeleteProduct(string id)
+        public IActionResult DeleteProduct(ObjectId id)
         {
             _proizvodService.DeleteProduct(id);
             return NoContent();

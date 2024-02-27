@@ -7,8 +7,8 @@ namespace WebShop.Models
     public class Proizvod
     {
         [BsonId]
-        
-        public int Id { get; set; }
+        public ObjectId Id { get; set; }
+        //public int Id { get; set; }
         [BsonElement("name")]
         public string Name { get; set; }
         [BsonElement("imageURL")]
